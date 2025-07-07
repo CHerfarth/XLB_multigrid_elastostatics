@@ -14,8 +14,10 @@ from xlb.experimental.thermo_mechanical.kernel_provider import KernelProvider
 from xlb import DefaultConfig
 
 
-class SolidsDirichlet(Operator):
-    """ """
+class SolidsBoundary(Operator):
+    """ 
+    Operator to apply Dirichlet and VN boundary conditions
+    """
 
     def __init__(
         self,
@@ -226,24 +228,7 @@ class SolidsDirichlet(Operator):
                     + y_dir * (self.compute_dtype(1.0) - zeta) * T_y
                 )
 
-            # -----------second-order correction-----------
-            dev_factor = self.compute_dtype(2.0) / (
-                self.compute_dtype(1.0) + self.compute_dtype(2.0) * tau_t
-            )
-            dis_x = bared_m_vec[0]
-            dis_y = bared_m_vec[1]
-            m_12 = bared_m_vec[5]
-            m_21 = bared_m_vec[6]
-            dx_sxx = dev_factor * (theta * dis_x - m_12) - force_x
-            dy_syy = dev_factor * (theta * dis_y - m_21) - force_y
-            dy_sxy = dev_factor * (m_12 - theta * dis_x)
-            dx_sxy = dev_factor * (m_21 - theta * dis_y)
-            """if wp.abs(wp.abs(x_dir) + wp.abs(y_dir) - self.compute_dtype(1.0)) < 1e-3:
-                f_out[new_direction] += self.compute_dtype(0.5)*(x_dir*dx_sxx + y_dir*dy_syy)
-                f_out[new_direction] += q_ij*(wp.abs(x_dir)*(dx_sxx*n_x + dx_sxy*n_y) + wp.abs(y_dir)*(dy_sxy*n_x + dy_syy*n_y))
-            elif wp.abs(wp.abs(x_dir) + wp.abs(y_dir) - self.compute_dtype(2.0)) < 1e-3:
-                f_out[new_direction] += self.compute_dtype(0.25)*(x_dir*dy_sxy + y_dir*dx_sxy)
-                f_out[new_direction] += self.compute_dtype(0.25)*q_ij*((self.compute_dtype(1)+zeta)*(dx_sxx*n_x + dx_sxy*n_y + x_dir*y_dir*(dy_sxx*n_x + dy_sxy*n_y)) + (self.compute_dtype(1) - zeta)*(x_dir*y_dir*(dx_sxy*n_x + dx_syy*n_y) + dy_sxy*n_x + dy_syy*n_y))"""
+            # so far no first order correction is implemented, this is a ToDo 
 
             return f_out
 

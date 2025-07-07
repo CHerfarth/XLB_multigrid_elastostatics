@@ -81,6 +81,15 @@ class SolidsCollision(Collision):
             omega: vec,
             theta: self.compute_dtype,
         ):
+            """
+            Kernel to compute the collision step for solids
+            f: pre-collision populations
+            f_out: array to write post-collision populations to
+            
+            exits with:
+                f_out: post-collision populations
+            """
+
             i, j, k = wp.tid()  # for 2d, k will equal 1
 
             f_vec = read_local_population(f, i, j)

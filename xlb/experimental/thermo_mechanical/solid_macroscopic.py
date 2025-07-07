@@ -13,14 +13,10 @@ from xlb.experimental.thermo_mechanical.kernel_provider import KernelProvider
 
 
 class SolidMacroscopics(Operator):
-    def __init__(self, grid, omega, velocity_set=None, precision_policy=None, compute_backend=None):
-        super().__init__(
-            velocity_set=velocity_set,
-            precision_policy=precision_policy,
-            compute_backend=compute_backend,
-        )
-        self.omega = omega
-        # Mapping for macroscopics:
+    """
+    Operator to compute macroscopics
+
+    Macroscopics are written to the output_array in the following order:
         # 0: dis_x
         # 1: dis_y
         # 2: s_xx
@@ -30,6 +26,15 @@ class SolidMacroscopics(Operator):
         # 6: dy_syy
         # 7: dy_sxy
         #  8: dx_sxy
+    """
+    def __init__(self, grid, omega, velocity_set=None, precision_policy=None, compute_backend=None):
+        super().__init__(
+            velocity_set=velocity_set,
+            precision_policy=precision_policy,
+            compute_backend=compute_backend,
+        )
+        self.omega = omega
+        
 
     def _construct_warp(self):
         # get warp funcs
@@ -100,6 +105,14 @@ class SolidMacroscopics(Operator):
             theta: self.compute_dtype,
             kappa: self.compute_dtype,
         ):
+            """
+            Macroscopics: array to write macroscopics to
+            bared_moments: array with bared moments at all nodes
+            force: array with force at all nodes
+
+            exits with:
+                macroscopics written to output_array
+            """
             i, j, k = wp.tid()
             bared_m = read_local_population(bared_moments, i, j)
             force_x = self.compute_dtype(force[0, i, j, 0])

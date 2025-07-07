@@ -144,7 +144,8 @@ class SolidsStepper(Stepper):
             f_1: post-collision populations at time t
             f_2: post-collision populations at time t - dt
 
-            exits with post-collision populations at time t + dt written to f_2
+            exits with:
+                post-collision populations at time t + dt written to f_2
             """
             i, j, k = wp.tid()
             index = wp.vec3i(i, j, k)
@@ -269,6 +270,14 @@ class SolidsStepper(Stepper):
             )
 
     def get_macroscopics(self, f, output_array, f_is_post_collision=True):
+        """
+        Computes macroscopics
+        f: either post-collision or pre-collision populations (depending on f_is_post_collision)    
+        output_array: array to write macroscopics to
+
+        exits with:
+            macroscopics written to output_array 
+        """
         if f_is_post_collision:
             assert self.boundary_conditions is None
             self.stream(f, output_array)
@@ -281,6 +290,10 @@ class SolidsStepper(Stepper):
         )
 
     def add_boundary_conditions(self, boundary_conditions, boundary_values):
+        """
+        Adds boundary conditions to the stepper
+        """
+
         self.boundary_conditions = boundary_conditions
         self.boundary_values = boundary_values
         self.boundaries = SolidsDirichlet(
@@ -289,6 +302,3 @@ class SolidsStepper(Stepper):
             precision_policy=self.precision_policy,
             compute_backend=self.compute_backend,
         )
-
-    def collide(self, f_1, f_2):
-        self.collision(f_1, f_2, self.force, self.omega)
