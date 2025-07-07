@@ -147,6 +147,12 @@ def draw_loglog_slope(
         **label_kwargs,
     )
 
+plt.rcParams.update({
+    'xtick.labelsize': 18,
+    'ytick.labelsize': 18,
+    'axes.titlesize': 20,
+    'legend.fontsize': 18,
+})
 
 # Load CSV data
 data = pd.read_csv(args.data)
@@ -200,8 +206,8 @@ ax.errorbar(
 
 
 # Add labels and legend
-plt.xlabel("n",fontsize=20)
-plt.ylabel("Runtime [seconds]",fontsize=20)
+plt.xlabel("n",fontsize=19)
+plt.ylabel("Runtime [seconds]",fontsize=19)
 plt.xscale("log", base=2)
 plt.yscale("log")
 draw_loglog_slope(fig, ax, (32, 0.1), 1, 2, "black")
@@ -225,8 +231,8 @@ ax.errorbar(
     color="red",
 )
 # Add labels and legend
-plt.xlabel("n",fontsize=20)
-plt.ylabel("Runtime (seconds)",fontsize=20)
+plt.xlabel("n",fontsize=19)
+plt.ylabel("Runtime (seconds)",fontsize=19)
 plt.xscale("log", base=2)
 plt.yscale("log")
 draw_loglog_slope(fig, ax, (32, 0.1), 1, 2, "black")
@@ -268,8 +274,8 @@ ax.errorbar(
 )
 plt.xscale("log", base=2)
 plt.ylim(bottom=0, top=50)
-plt.xlabel("n",fontsize=20)
-plt.ylabel("Iterations",fontsize=20)
+plt.xlabel("n",fontsize=19)
+plt.ylabel("Iterations",fontsize=19)
 plt.title(title)
 plt.legend()
 plt.savefig("multigrid_iterations.pdf")
@@ -288,11 +294,11 @@ ax.errorbar(
     yerr=standard_iterations["std"],
     fmt="s-",
     capsize=5,
-    label="Iterations",
+    label="Timesteps",
     color="red",
 )
-plt.xlabel("n",fontsize=20)
-plt.ylabel("Iterations",fontsize=20)
+plt.xlabel("n",fontsize=19)
+plt.ylabel("Timesteps",fontsize=19)
 plt.xscale("log", base=2)
 plt.yscale("log")
 draw_loglog_slope(fig, ax, (64, 1000), 1, 2, "black")
@@ -337,8 +343,8 @@ ax.errorbar(
 plt.xscale("log", base=2)
 plt.yscale("log")
 draw_loglog_slope(fig, ax, (64 * 64, 1), 1, 2, "black")
-plt.xlabel("n",fontsize=20)
-plt.ylabel("WU",fontsize=20)
+plt.xlabel("n",fontsize=19)
+plt.ylabel("WU",fontsize=19)
 plt.title(title)
 plt.legend()
 plt.grid(True)
@@ -392,8 +398,8 @@ ax.errorbar(
 plt.xscale("log", base=2)
 plt.yscale("log")
 draw_loglog_slope(fig, ax, (64 * 64, 1), 1, 2, "black")
-plt.xlabel("n",fontsize=20)
-plt.ylabel("Runtime [seconds]",fontsize=20)
+plt.xlabel("n",fontsize=19)
+plt.ylabel("Runtime [seconds]",fontsize=19)
 plt.title(title)
 plt.legend()
 plt.grid(True)

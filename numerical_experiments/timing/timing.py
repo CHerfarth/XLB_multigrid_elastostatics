@@ -107,7 +107,7 @@ if __name__ == "__main__":
     expected_macroscopics = np.concatenate((expected_displacement, expected_stress), axis=0)
     expected_macroscopics = utils.restrict_solution_to_domain(expected_macroscopics, potential, dx)
 
-    tol = 1e-7
+    tol = 1e-8
     gamma = 0.8
 
     print("here")
