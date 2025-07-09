@@ -151,7 +151,7 @@ plt.rcParams.update({
     'xtick.labelsize': 18,
     'ytick.labelsize': 18,
     'axes.titlesize': 20,
-    'legend.fontsize': 18,
+    'legend.fontsize': 15,
 })
 
 # Load CSV data
@@ -210,8 +210,8 @@ plt.xlabel("n",fontsize=19)
 plt.ylabel("Runtime [seconds]",fontsize=19)
 plt.xscale("log", base=2)
 plt.yscale("log")
-draw_loglog_slope(fig, ax, (32, 0.1), 1, 2, "black")
-draw_loglog_slope(fig, ax, (170, 2), 1, 4, "black")
+#draw_loglog_slope(fig, ax, (64, 0.1), 1, 2, "black")
+#draw_loglog_slope(fig, ax, (330, 10), 1, 4, "black")
 plt.title(title)
 plt.legend()
 plt.grid(True)
@@ -235,8 +235,8 @@ plt.xlabel("n",fontsize=19)
 plt.ylabel("Runtime (seconds)",fontsize=19)
 plt.xscale("log", base=2)
 plt.yscale("log")
-draw_loglog_slope(fig, ax, (32, 0.1), 1, 2, "black")
-draw_loglog_slope(fig, ax, (170, 2), 1, 4, "black")
+draw_loglog_slope(fig, ax, (64, 0.05), 1, 2, "black")
+draw_loglog_slope(fig, ax, (300, 2), 1, 4, "black")
 plt.title(title)
 plt.grid(True)
 plt.tight_layout()
@@ -278,6 +278,7 @@ plt.xlabel("n",fontsize=19)
 plt.ylabel("Iterations",fontsize=19)
 plt.title(title)
 plt.legend()
+plt.tight_layout()
 plt.savefig("multigrid_iterations.pdf")
 
 # plot only standard iterations
@@ -303,6 +304,7 @@ plt.xscale("log", base=2)
 plt.yscale("log")
 draw_loglog_slope(fig, ax, (64, 1000), 1, 2, "black")
 plt.title(title)
+plt.tight_layout()
 plt.savefig("standard_iterations.pdf")
 
 
@@ -363,7 +365,7 @@ ax.errorbar(
     yerr=vcycle_time_no_allocation["std"],
     fmt="o-",
     capsize=5,
-    label="V-Cycle (allocation time not included)",
+    label="V-Cycle (not with allocation time)",
     color="blue",
 )
 ax.errorbar(
@@ -381,7 +383,7 @@ ax.errorbar(
     yerr=wcycle_time_no_allocation["std"],
     fmt="d-",
     capsize=5,
-    label="W-Cycle (allocation time not included)",
+    label="W-Cycle (not with allocation time)",
     color="green",
 )
 ax.errorbar(
