@@ -42,9 +42,9 @@ for i in range(args.k):
 
 ax.grid(True)
 plt.yscale("log")
-ax.set_title(title)
-plt.xlabel(x_label, labelpad=20, fontsize=12)
-plt.ylabel(y_label, labelpad=20, fontsize=12)
+ax.set_title(title, fontsize=20)
+plt.xlabel(x_label, labelpad=20, fontsize=15)
+plt.ylabel(y_label, labelpad=20, fontsize=15)
 plt.legend(loc="upper right")
 plt.ylim(bottom=1e-7)  # machine precision for float32s
 plt.tight_layout()

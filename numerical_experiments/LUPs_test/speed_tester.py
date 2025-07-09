@@ -14,7 +14,7 @@ import sympy
 import csv
 import math
 import xlb.experimental.thermo_mechanical.solid_utils as utils
-import xlb.experimental.thermo_mechanical.solid_bounceback as bc
+import xlb.experimental.thermo_mechanical.solid_boundary as bc
 from xlb.utils import save_fields_vtk, save_image
 from xlb.experimental.thermo_mechanical.solid_simulation_params import SimulationParams
 from xlb.experimental.thermo_mechanical.benchmark_data import BenchmarkData

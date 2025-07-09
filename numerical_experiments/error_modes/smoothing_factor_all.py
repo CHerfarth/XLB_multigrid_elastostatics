@@ -145,7 +145,7 @@ inner_iterations = 200
 data_smoothing = list()
 
 d_nu = 1 / outer_iterations
-d_E = 1 / outer_iterations
+d_E = 2 / outer_iterations
 
 for k in range(outer_iterations):
     nu = 0.01 + d_nu * k
@@ -208,9 +208,9 @@ contour = ax.contourf(x_grid, y_grid, z_grid, levels=60, cmap="viridis")
 plt.colorbar(contour)
 
 # Set labels
-ax.set_xlabel("E_scaled")
-ax.set_ylabel("nu")
-plt.title(r"$\bar{\mu}$")
+ax.set_xlabel(r"$\tilde{E}$", fontsize=15)
+ax.set_ylabel(r"\nu", fontsize=15)
+plt.title(r"$\bar{\mu}$", fontsize=20)
 
 # Show the plot
 plt.savefig("smoothing_factor.pdf")

@@ -20,9 +20,9 @@ current_date_time="`date "+%Y-%m-%d_%H-%M-%S"`"
 log_file="log_"$current_date_time".txt"
 results_file="results_"$current_date_time".csv"
 
-repeat_iterations=1 #20
+repeat_iterations=20
 
-timing_cutoff=40
+timing_cutoff=90
 
 nu=$base_nu
 for ((l=0; l<num_nu; l++))

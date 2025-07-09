@@ -110,8 +110,6 @@ if __name__ == "__main__":
     tol = 1e-8
     gamma = 0.8
 
-    print("here")
-
     if args.test_multigrid:
         # -------warmup run to make sure all kernels are loaded---------------------------------------------------------
         multigrid_solver = MultigridSolver(

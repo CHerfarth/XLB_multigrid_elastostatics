@@ -17,6 +17,14 @@ parser.add_argument("nu", type=float)
 parser.add_argument("gamma", type=float)
 args = parser.parse_args()
 
+
+plt.rcParams.update({
+    'xtick.labelsize': 18,
+    'ytick.labelsize': 18,
+    'axes.titlesize': 20,
+    'legend.fontsize': 18,
+})
+
 # vars:
 theta = 1 / 3
 E = args.E
@@ -196,16 +204,16 @@ def pi_formatter(x, pos):
         return r"${0}\pi$".format(int(frac) if frac == int(frac) else "{0:g}".format(frac))
 
 
-ax.xaxis.set_major_locator(plt.MultipleLocator(np.pi / 4))
+ax.xaxis.set_major_locator(plt.MultipleLocator(np.pi / 2))
 ax.xaxis.set_major_formatter(FuncFormatter(pi_formatter))
-ax.yaxis.set_major_locator(plt.MultipleLocator(np.pi / 4))
+ax.yaxis.set_major_locator(plt.MultipleLocator(np.pi / 2))
 ax.yaxis.set_major_formatter(FuncFormatter(pi_formatter))
 
 # Set labels
 x_label = r"$\phi_1$"
 y_label = r"$\phi_2$"
-plt.xlabel(x_label, labelpad=20, fontsize=12)
-plt.ylabel(y_label, labelpad=20, fontsize=12)
+plt.xlabel(x_label, labelpad=20, fontsize=19)
+plt.ylabel(y_label, labelpad=20, fontsize=19)
 plt.title("Amplification Factor")
 
 # Show the plot

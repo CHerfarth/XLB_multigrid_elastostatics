@@ -10,7 +10,7 @@ from xlb.operator import Operator
 from xlb.compute_backend import ComputeBackend
 
 from xlb.experimental.thermo_mechanical.solid_collision import SolidsCollision
-from xlb.experimental.thermo_mechanical.solid_bounceback import SolidsDirichlet
+from xlb.experimental.thermo_mechanical.solid_boundary import SolidsBoundary
 from xlb.experimental.thermo_mechanical.solid_macroscopic import SolidMacroscopics
 from xlb.experimental.thermo_mechanical.solid_bared_moments import SolidBaredMoments
 import xlb.experimental.thermo_mechanical.solid_utils as utils
@@ -94,7 +94,7 @@ class SolidsStepper(Stepper):
         # ---------define operators----------
         self.collision = SolidsCollision(self.omega)
         self.stream = Stream(self.velocity_set, self.precision_policy, self.compute_backend)
-        self.boundaries = SolidsDirichlet(
+        self.boundaries = SolidsBoundary(
             force=self.force,
             velocity_set=self.velocity_set,
             precision_policy=self.precision_policy,
@@ -296,7 +296,7 @@ class SolidsStepper(Stepper):
 
         self.boundary_conditions = boundary_conditions
         self.boundary_values = boundary_values
-        self.boundaries = SolidsDirichlet(
+        self.boundaries = SolidsBoundary(
             force=self.force,
             velocity_set=self.velocity_set,
             precision_policy=self.precision_policy,

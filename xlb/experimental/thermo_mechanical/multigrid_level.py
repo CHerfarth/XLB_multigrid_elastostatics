@@ -9,7 +9,7 @@ from xlb.experimental.thermo_mechanical.multigrid_stepper import MultigridSteppe
 import xlb.experimental.thermo_mechanical.solid_utils as utils
 from xlb.experimental.thermo_mechanical.benchmark_data import BenchmarkData
 from xlb.experimental.thermo_mechanical.kernel_provider import KernelProvider
-import xlb.experimental.thermo_mechanical.solid_bounceback as bc
+import xlb.experimental.thermo_mechanical.solid_boundary as bc
 from xlb import DefaultConfig
 import math
 from typing import Any

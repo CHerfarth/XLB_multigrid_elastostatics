@@ -10,7 +10,7 @@ current_date_time="`date "+%Y-%m-%d_%H-%M-%S"`"
 log_file="log_"$current_date_time".txt"
 results_file="results_"$current_date_time".csv"
 
-repeated_measurements=1
+repeated_measurements=20
 
 echo "dim,single_precision_periodic,single_precision_dirichlet,double_precision_periodic,double_precision_dirichlet" > $results_file
 
