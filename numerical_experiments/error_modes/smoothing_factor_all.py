@@ -141,7 +141,7 @@ def get_LB_matrix(mu, theta, K, phi_x, phi_y):
 
 
 outer_iterations = 50
-inner_iterations = 200
+inner_iterations = 100 #200
 data_smoothing = list()
 
 d_nu = 1 / outer_iterations
@@ -209,7 +209,7 @@ plt.colorbar(contour)
 
 # Set labels
 ax.set_xlabel(r"$\tilde{E}$", fontsize=15)
-ax.set_ylabel(r"\nu", fontsize=15)
+ax.set_ylabel(r"$\nu$", fontsize=15)
 plt.title(r"$\bar{\mu}$", fontsize=20)
 
 # Show the plot
