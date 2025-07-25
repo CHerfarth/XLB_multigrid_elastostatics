@@ -287,7 +287,6 @@ if __name__ == "__main__":
     
     if args.test_standard:
         # -----------warmup run to make sure all kernels are loaded---------------------------------# initialize stepper
-        print("hmm")
         kernel_provider = KernelProvider()
         subtract_populations = kernel_provider.subtract_populations
         l2_norm_squared = kernel_provider.l2_norm
