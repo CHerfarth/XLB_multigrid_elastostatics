@@ -187,9 +187,11 @@ z_grid = griddata((x, y), z, (x_grid, y_grid), method="cubic")
 fig, ax = plt.subplots(figsize=(8, 6))
 contour = ax.contourf(x_grid, y_grid, z_grid, levels=30, cmap="viridis")
 
+# Set contour color limits
+contour.set_clim(0.25, 1)
 
-# Add color bar to the plot
-plt.colorbar(contour)
+# Add color bar to the plot with matching limits
+plt.colorbar(contour, ax=ax, extend='both', boundaries=np.linspace(0.25, 1, 100), ticks=np.linspace(0.25, 1, 6))
 
 
 def pi_formatter(x, pos):
@@ -210,14 +212,29 @@ ax.yaxis.set_major_locator(plt.MultipleLocator(np.pi / 2))
 ax.yaxis.set_major_formatter(FuncFormatter(pi_formatter))
 
 # Set labels
-x_label = r"$\phi_1$"
-y_label = r"$\phi_2$"
+x_label = r"$\theta_1$"
+y_label = r"$\theta_2$"
 plt.xlabel(x_label, labelpad=20, fontsize=19)
 plt.ylabel(y_label, labelpad=20, fontsize=19)
-plt.title("Amplification Factor")
+
+title = r"$\tilde{E} = $" + str(args.E) + r", $\nu = $" + str(args.nu)
+plt.title(title)
 
 # Show the plot
 plt.tight_layout()
 plt.savefig("contour_E_{}_nu_{}.pdf".format(args.E, args.nu))
 
+
 print("Smoothing Factor: {}".format(smoothing_factor))
+
+rect = plt.Rectangle(
+    (-np.pi/2, -np.pi/2),
+    np.pi,
+    np.pi,
+    linewidth=2,
+    edgecolor='red',
+    facecolor='none'
+)
+ax.add_patch(rect)
+
+plt.savefig("contour_rect_E_{}_nu_{}.pdf".format(args.E, args.nu))

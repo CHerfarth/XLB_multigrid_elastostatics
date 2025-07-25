@@ -386,3 +386,17 @@ plt.title("Amplification Factor")
 # Show the plot
 plt.tight_layout()
 plt.savefig("contour_E_{}_nu_{}.pdf".format(args.E, args.nu))
+
+
+# Add a red square from -np.pi/2 to np.pi/2
+rect = plt.Rectangle(
+    (-np.pi/2, -np.pi/2),
+    np.pi,
+    np.pi,
+    linewidth=2,
+    edgecolor='red',
+    facecolor='none'
+)
+ax.add_patch(rect)
+
+plt.savefig("contour_rect_E_{}_nu_{}.pdf".format(args.E, args.nu))

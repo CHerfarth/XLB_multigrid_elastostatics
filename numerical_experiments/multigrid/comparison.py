@@ -13,7 +13,7 @@ import sympy
 import csv
 import math
 import xlb.experimental.thermo_mechanical.solid_utils as utils
-import xlb.experimental.thermo_mechanical.solid_bounceback as bc
+import xlb.experimental.thermo_mechanical.solid_boundary as bc
 from xlb.utils import save_fields_vtk, save_image
 from xlb.experimental.thermo_mechanical.solid_simulation_params import SimulationParams
 from xlb.experimental.thermo_mechanical.multigrid_solver import MultigridSolver
@@ -131,9 +131,9 @@ if __name__ == "__main__":
         dt=dt,
         force_load=force_load,
         gamma=0.8,
-        v1=2,
-        v2=2,
-        max_levels=2,
+        v1=5,
+        v2=5,
+        max_levels=None,
         boundary_conditions=boundary_array,
         boundary_values=boundary_values,
         potential=potential_sympy,
@@ -141,9 +141,6 @@ if __name__ == "__main__":
     )
 
     finest_level = multigrid_solver.get_finest_level()
-    finest_level.f_1 = utils.get_initial_guess_from_white_noise(
-        shape=finest_level.f_1.shape, precision_policy=precision_policy, dx=dx
-    )
 
     for i in range(timesteps):
         residual_norm = multigrid_solver.start_v_cycle(return_residual=True)
@@ -188,8 +185,6 @@ if __name__ == "__main__":
         cardinality=velocity_set.q, dtype=precision_policy.store_precision
     )
     residual = grid.create_field(cardinality=velocity_set.q, dtype=precision_policy.store_precision)
-    # set initial guess from white noise
-    # f_1 = utils.get_initial_guess_from_white_noise(f_2.shape, precision_policy, dx, mean=3, seed=31)
 
     data_over_wu = list()  # to track error over time
     residuals = list()
