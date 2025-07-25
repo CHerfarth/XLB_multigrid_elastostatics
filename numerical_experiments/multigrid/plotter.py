@@ -81,19 +81,19 @@ plt.savefig("error_over_time.png")
 
 
 # plot all data for multigrid
-title = "Error/Residual over Work Unit for Multigrid LB"
-x_label = "WU"
-y_label = "Residual/Error"
+title = r"$\tilde{E} = $" + str(0.5) + r", $\nu = $" + str(0.5)
+x_label = "Iteration"
+y_label = "Error"
 fig, ax = plt.subplots()
-ax.plot(multigrid_data["wu"], multigrid_data["residual_norm"], "-", color="red", label="Residual")
-ax.plot(multigrid_data["wu"], multigrid_data["l2_disp"], "-", color="blue", label="L2 disp")
-ax.plot(multigrid_data["wu"], multigrid_data["linf_disp"], "--", color="blue", label="Linf disp")
-ax.plot(multigrid_data["wu"], multigrid_data["l2_stress"], "-", color="green", label="L2 stress")
+#ax.plot(multigrid_data["iteration"], multigrid_data["residual_norm"], "-", color="red", label="Residual")
+ax.plot(multigrid_data["iteration"], multigrid_data["l2_disp"], "-", color="blue", label="L2 disp")
+ax.plot(multigrid_data["iteration"], multigrid_data["linf_disp"], "--", color="blue", label="Linf disp")
+ax.plot(multigrid_data["iteration"], multigrid_data["l2_stress"], "-", color="green", label="L2 stress")
 ax.plot(
-    multigrid_data["wu"], multigrid_data["linf_stress"], "--", color="green", label="Linf stress"
+    multigrid_data["iteration"], multigrid_data["linf_stress"], "--", color="green", label="Linf stress"
 )
 ax.grid(True)
-ax.set_xlim((0, max_wu_normal))
+ax.set_xlim((0, 10))
 plt.yscale("log")
 ax.set_title(title)
 plt.xlabel(x_label, labelpad=20, fontsize=12)
@@ -104,15 +104,15 @@ plt.savefig("multigrid_plot.png")
 
 
 # plot all data for normal
-title = "Error/Residual over Work Unit for Standard LB"
-x_label = "WU"
-y_label = "Residual/Error"
+title = r"$\tilde{E} = $" + str(0.5) + r", $\nu = $" + str(0.5)
+x_label = "Timestep"
+y_label = "Error"
 fig, ax = plt.subplots()
-ax.plot(normal_data["wu"], normal_data["residual_norm"], "-", color="red", label="Residual")
-ax.plot(normal_data["wu"], normal_data["l2_disp"], "-", color="blue", label="L2 disp")
-ax.plot(normal_data["wu"], normal_data["linf_disp"], "--", color="blue", label="Linf disp")
-ax.plot(normal_data["wu"], normal_data["l2_stress"], "-", color="green", label="L2 stress")
-ax.plot(normal_data["wu"], normal_data["linf_stress"], "--", color="green", label="Linf stress")
+#ax.plot(normal_data["iteration"], normal_data["residual_norm"], "-", color="red", label="Residual")
+ax.plot(normal_data["iteration"], normal_data["l2_disp"], "-", color="blue", label="L2 disp")
+ax.plot(normal_data["iteration"], normal_data["linf_disp"], "--", color="blue", label="Linf disp")
+ax.plot(normal_data["iteration"], normal_data["l2_stress"], "-", color="green", label="L2 stress")
+ax.plot(normal_data["iteration"], normal_data["linf_stress"], "--", color="green", label="Linf stress")
 ax.grid(True)
 ax.set_xlim((0, max_wu_normal))
 plt.yscale("log")
