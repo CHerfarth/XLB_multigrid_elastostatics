@@ -272,11 +272,11 @@ class SolidsStepper(Stepper):
     def get_macroscopics(self, f, output_array, f_is_post_collision=True):
         """
         Computes macroscopics
-        f: either post-collision or pre-collision populations (depending on f_is_post_collision)    
+        f: either post-collision or pre-collision populations (depending on f_is_post_collision)
         output_array: array to write macroscopics to
 
         exits with:
-            macroscopics written to output_array 
+            macroscopics written to output_array
         """
         if f_is_post_collision:
             assert self.boundary_conditions is None

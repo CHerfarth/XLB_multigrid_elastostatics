@@ -123,7 +123,7 @@ def get_smoothing_matrix(mu, theta, K, phi_x, phi_y, smoothing_param):
     M_eq[6, 1] = theta
 
     # for relaxation
-    gamma = smoothing_param 
+    gamma = smoothing_param
     L_mat = gamma * (M_inv @ D @ M_eq @ M + M_inv @ (I - D) @ M)
 
     for i in range(velocity_set.q - 1):
@@ -135,14 +135,15 @@ def get_smoothing_matrix(mu, theta, K, phi_x, phi_y, smoothing_param):
 
     return L_mat
 
+
 def get_2h_smoothing_matrix(mu, theta, K, phi_x, phi_y, smoothing_param):
-    L_mat = np.zeros(shape=(32,32), dtype=np.complex128) 
+    L_mat = np.zeros(shape=(32, 32), dtype=np.complex128)
     # 0 0
     L_mat[0:8, 0:8] = get_smoothing_matrix(mu, theta, K, phi_x, phi_y, smoothing_param)
     # 1 1
-    new_phi_x = phi_x - np.sign(phi_x)*np.pi
-    new_phi_y = phi_y - np.sign(phi_y)*np.pi
-    L_mat[8:16,8:16] = get_smoothing_matrix(mu, theta, K, new_phi_x, new_phi_y, smoothing_param)
+    new_phi_x = phi_x - np.sign(phi_x) * np.pi
+    new_phi_y = phi_y - np.sign(phi_y) * np.pi
+    L_mat[8:16, 8:16] = get_smoothing_matrix(mu, theta, K, new_phi_x, new_phi_y, smoothing_param)
     # 1 0
     L_mat[16:24, 16:24] = get_smoothing_matrix(mu, theta, K, new_phi_x, phi_y, smoothing_param)
     # 0 1
@@ -150,45 +151,48 @@ def get_2h_smoothing_matrix(mu, theta, K, phi_x, phi_y, smoothing_param):
 
     return L_mat
 
+
 def get_restriction_matrix(mu, theta, K, phi_x, phi_y):
     R_mat = np.zeros(shape=(8, 32), dtype=np.complex128)
 
-    #0 0
-    val = 0.25*(1+np.cos(phi_x))*(1+np.cos(phi_y))
-    R_mat[0:8, 0:8] = np.eye(8)*val
+    # 0 0
+    val = 0.25 * (1 + np.cos(phi_x)) * (1 + np.cos(phi_y))
+    R_mat[0:8, 0:8] = np.eye(8) * val
     # 1 1
-    new_phi_x = phi_x - np.sign(phi_x)*np.pi
-    new_phi_y = phi_y - np.sign(phi_y)*np.pi
-    val = 0.25*(1+np.cos(new_phi_x))*(1+np.cos(new_phi_y))
-    R_mat[0:8,8:16] = np.eye(8)*val
+    new_phi_x = phi_x - np.sign(phi_x) * np.pi
+    new_phi_y = phi_y - np.sign(phi_y) * np.pi
+    val = 0.25 * (1 + np.cos(new_phi_x)) * (1 + np.cos(new_phi_y))
+    R_mat[0:8, 8:16] = np.eye(8) * val
     # 1 0
-    val = 0.25*(1+np.cos(new_phi_x))*(1+np.cos(phi_y))
-    R_mat[0:8,16:24] = np.eye(8)*val
+    val = 0.25 * (1 + np.cos(new_phi_x)) * (1 + np.cos(phi_y))
+    R_mat[0:8, 16:24] = np.eye(8) * val
     # 0 1
-    val = 0.25*(1+np.cos(phi_x))*(1+np.cos(new_phi_y))
-    R_mat[0:8,24:32] = np.eye(8)*val
+    val = 0.25 * (1 + np.cos(phi_x)) * (1 + np.cos(new_phi_y))
+    R_mat[0:8, 24:32] = np.eye(8) * val
 
     return R_mat
 
-def get_prolongation_matrix(mu, theta, K, phi_x, phi_y):
-    P_mat = np.zeros(shape=(32,8), dtype=np.complex128)
 
-    #0 0
-    val = (1+np.cos(phi_x))*(1+np.cos(phi_y))
-    P_mat[0:8, 0:8] = np.eye(8)*val
+def get_prolongation_matrix(mu, theta, K, phi_x, phi_y):
+    P_mat = np.zeros(shape=(32, 8), dtype=np.complex128)
+
+    # 0 0
+    val = (1 + np.cos(phi_x)) * (1 + np.cos(phi_y))
+    P_mat[0:8, 0:8] = np.eye(8) * val
     # 1 1
-    new_phi_x = phi_x - np.sign(phi_x)*np.pi
-    new_phi_y = phi_y - np.sign(phi_y)*np.pi
-    val = (1+np.cos(new_phi_x))*(1+np.cos(new_phi_y))
-    P_mat[8:16,0:8] = np.eye(8)*val
+    new_phi_x = phi_x - np.sign(phi_x) * np.pi
+    new_phi_y = phi_y - np.sign(phi_y) * np.pi
+    val = (1 + np.cos(new_phi_x)) * (1 + np.cos(new_phi_y))
+    P_mat[8:16, 0:8] = np.eye(8) * val
     # 1 0
-    val = (1+np.cos(new_phi_x))*(1+np.cos(phi_y))
-    P_mat[16:24,0:8] = np.eye(8)*val
+    val = (1 + np.cos(new_phi_x)) * (1 + np.cos(phi_y))
+    P_mat[16:24, 0:8] = np.eye(8) * val
     # 0 1
-    val = (1+np.cos(phi_x))*(1+np.cos(new_phi_y))
-    P_mat[24:32,0:8] = np.eye(8)*val
+    val = (1 + np.cos(phi_x)) * (1 + np.cos(new_phi_y))
+    P_mat[24:32, 0:8] = np.eye(8) * val
 
     return P_mat
+
 
 def get_L_coarse(mu, theta, K, phi_x, phi_y, factor=1):
     I = np.eye(8)
@@ -274,24 +278,29 @@ def get_L_coarse(mu, theta, K, phi_x, phi_y, factor=1):
     M_eq[5, 0] = theta
     M_eq[6, 1] = theta
 
-    L_mat = (M_inv @ D @ M_eq @ M + M_inv @ (I - D) @ M)
+    L_mat = M_inv @ D @ M_eq @ M + M_inv @ (I - D) @ M
 
     for i in range(velocity_set.q - 1):
         L_mat[i, :] *= cmath.exp(
-            -1j * (factor*phi_x * velocity_set.c[0, i + 1] + factor*phi_y * velocity_set.c[1, i + 1])
+            -1j
+            * (
+                factor * phi_x * velocity_set.c[0, i + 1]
+                + factor * phi_y * velocity_set.c[1, i + 1]
+            )
         )
-    
+
     L_mat = L_mat - I
     return L_mat
 
+
 def get_L_fine(mu, theta, K, phi_x, phi_y):
-    L_mat = np.zeros(shape=(32,32), dtype=np.complex128) 
+    L_mat = np.zeros(shape=(32, 32), dtype=np.complex128)
     # 0 0
     L_mat[0:8, 0:8] = get_L_coarse(mu, theta, K, phi_x, phi_y)
     # 1 1
-    new_phi_x = phi_x - np.sign(phi_x)*np.pi
-    new_phi_y = phi_y - np.sign(phi_y)*np.pi
-    L_mat[8:16,8:16] = get_L_coarse(mu, theta, K, new_phi_x, new_phi_y)
+    new_phi_x = phi_x - np.sign(phi_x) * np.pi
+    new_phi_y = phi_y - np.sign(phi_y) * np.pi
+    L_mat[8:16, 8:16] = get_L_coarse(mu, theta, K, new_phi_x, new_phi_y)
     # 1 0
     L_mat[16:24, 16:24] = get_L_coarse(mu, theta, K, new_phi_x, phi_y)
     # 0 1
@@ -299,17 +308,20 @@ def get_L_fine(mu, theta, K, phi_x, phi_y):
 
     return L_mat
 
-iterations=200
+
+iterations = 200
 K_val = E / (2 * (1 - nu))
 mu_val = E / (2 * (1 + nu))
-theta=1./3.
+theta = 1.0 / 3.0
 results = list()
 
-phi_x = -np.pi/2
+phi_x = -np.pi / 2
 for i in range(iterations):
-    phi_y = -np.pi/2
+    phi_y = -np.pi / 2
     for j in range(iterations):
-        S = get_2h_smoothing_matrix(mu=mu_val, theta=theta, K=K_val, phi_x=phi_x, phi_y=phi_y, smoothing_param=args.gamma)
+        S = get_2h_smoothing_matrix(
+            mu=mu_val, theta=theta, K=K_val, phi_x=phi_x, phi_y=phi_y, smoothing_param=args.gamma
+        )
         pre_S = np.eye(32)
         for k in range(args.pre_smoothing_steps):
             pre_S = pre_S @ S
@@ -328,16 +340,18 @@ for i in range(iterations):
 
         if not (np.isclose(phi_x, 0) and np.isclose(phi_y, 0)):
             results.append((phi_x, phi_y, spectral_radius))
-        phi_y += np.pi / (iterations-2)
+        phi_y += np.pi / (iterations - 2)
 
     print("{} % complete".format((i + 1) * 100 / iterations))
-    phi_x += np.pi / (iterations-2)
+    phi_x += np.pi / (iterations - 2)
 
 print(pre_S)
 print(post_S)
 
 
-x_grid, y_grid = np.meshgrid(np.linspace(-0.5*np.pi, 0.5*np.pi, 100), np.linspace(-0.5*np.pi, 0.5*np.pi, 100))
+x_grid, y_grid = np.meshgrid(
+    np.linspace(-0.5 * np.pi, 0.5 * np.pi, 100), np.linspace(-0.5 * np.pi, 0.5 * np.pi, 100)
+)
 x = np.array([float(item[0]) for item in results])
 y = np.array([float(item[1]) for item in results])
 z = np.array([float(item[2]) for item in results])
@@ -390,12 +404,7 @@ plt.savefig("contour_E_{}_nu_{}.pdf".format(args.E, args.nu))
 
 # Add a red square from -np.pi/2 to np.pi/2
 rect = plt.Rectangle(
-    (-np.pi/2, -np.pi/2),
-    np.pi,
-    np.pi,
-    linewidth=2,
-    edgecolor='red',
-    facecolor='none'
+    (-np.pi / 2, -np.pi / 2), np.pi, np.pi, linewidth=2, edgecolor="red", facecolor="none"
 )
 ax.add_patch(rect)
 

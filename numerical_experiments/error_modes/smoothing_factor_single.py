@@ -19,10 +19,10 @@ args = parser.parse_args()
 
 
 plt.rcParams.update({
-    'xtick.labelsize': 18,
-    'ytick.labelsize': 18,
-    'axes.titlesize': 20,
-    'legend.fontsize': 18,
+    "xtick.labelsize": 18,
+    "ytick.labelsize": 18,
+    "axes.titlesize": 20,
+    "legend.fontsize": 18,
 })
 
 # vars:
@@ -159,9 +159,9 @@ for i in range(iterations):
         spectral_radius = max(np.abs(ev) for ev in eigenvalues)
         # spectral_radius = np.linalg.norm(np.array(L_evaluated, dtype=np.complex128), ord=2)
         results.append((phi_x_val, phi_y_val, spectral_radius))
-        phi_x_val += (2 * np.pi) / (iterations-2)
+        phi_x_val += (2 * np.pi) / (iterations - 2)
     print("{} % complete".format((i + 1) * 100 / iterations))
-    phi_y_val += (2 * np.pi) / (iterations-2)
+    phi_y_val += (2 * np.pi) / (iterations - 2)
 
 
 x = np.array([float(item[0]) for item in results])
@@ -185,13 +185,17 @@ z_grid = griddata((x, y), z, (x_grid, y_grid), method="cubic")
 
 # Create a 2D contour plot
 fig, ax = plt.subplots(figsize=(8, 6))
-contour = ax.contourf(x_grid, y_grid, z_grid, levels=30, cmap="viridis")
+contour = ax.contourf(
+    x_grid, y_grid, z_grid, levels=np.linspace(0.0, 1.0, 50), cmap="viridis", vmin=0, vmax=1
+)
 
 # Set contour color limits
-contour.set_clim(0.25, 1)
+contour.set_clim(0, 1)
 
-# Add color bar to the plot with matching limits
-plt.colorbar(contour, ax=ax, extend='both', boundaries=np.linspace(0.25, 1, 100), ticks=np.linspace(0.25, 1, 6))
+# Add color bar to the plot with fixed limits
+plt.colorbar(
+    contour, ax=ax, extend="both", boundaries=np.linspace(0, 1, 100), ticks=np.linspace(0, 1, 6)
+)
 
 
 def pi_formatter(x, pos):
@@ -228,12 +232,7 @@ plt.savefig("contour_E_{}_nu_{}.pdf".format(args.E, args.nu))
 print("Smoothing Factor: {}".format(smoothing_factor))
 
 rect = plt.Rectangle(
-    (-np.pi/2, -np.pi/2),
-    np.pi,
-    np.pi,
-    linewidth=2,
-    edgecolor='red',
-    facecolor='none'
+    (-np.pi / 2, -np.pi / 2), np.pi, np.pi, linewidth=2, edgecolor="red", facecolor="none"
 )
 ax.add_patch(rect)
 

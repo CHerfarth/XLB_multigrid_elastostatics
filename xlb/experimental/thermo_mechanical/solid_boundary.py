@@ -15,7 +15,7 @@ from xlb import DefaultConfig
 
 
 class SolidsBoundary(Operator):
-    """ 
+    """
     Operator to apply Dirichlet and VN boundary conditions
     """
 
@@ -228,7 +228,7 @@ class SolidsBoundary(Operator):
                     + y_dir * (self.compute_dtype(1.0) - zeta) * T_y
                 )
 
-            # so far no first order correction is implemented, this is a ToDo 
+            # so far no first order correction is implemented, this is a ToDo
 
             return f_out
 

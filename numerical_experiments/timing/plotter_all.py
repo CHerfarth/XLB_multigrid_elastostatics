@@ -4,6 +4,7 @@ import matplotlib
 import numpy as np
 import argparse
 
+
 def draw_loglog_slope(
     fig,
     ax,
@@ -140,11 +141,12 @@ def draw_loglog_slope(
         **label_kwargs,
     )
 
+
 plt.rcParams.update({
-    'xtick.labelsize': 18,
-    'ytick.labelsize': 18,
-    'axes.titlesize': 20,
-    'legend.fontsize': 15,
+    "xtick.labelsize": 18,
+    "ytick.labelsize": 18,
+    "axes.titlesize": 20,
+    "legend.fontsize": 15,
 })
 
 
@@ -161,18 +163,10 @@ data_3 = data_3[data_3["standard_converged_no_allocation"] == 1]
 data_4 = data_4[data_4["standard_converged_no_allocation"] == 1]
 
 
-runtimes_1 = (
-    data_1.groupby("dim")["standard_time_no_allocation"].agg(["mean", "std"]).reset_index()
-)
-runtimes_2 = (
-    data_2.groupby("dim")["standard_time_no_allocation"].agg(["mean", "std"]).reset_index()
-)
-runtimes_3 = (
-    data_3.groupby("dim")["standard_time_no_allocation"].agg(["mean", "std"]).reset_index()
-)
-runtimes_4 = (
-    data_4.groupby("dim")["standard_time_no_allocation"].agg(["mean", "std"]).reset_index()
-)
+runtimes_1 = data_1.groupby("dim")["standard_time_no_allocation"].agg(["mean", "std"]).reset_index()
+runtimes_2 = data_2.groupby("dim")["standard_time_no_allocation"].agg(["mean", "std"]).reset_index()
+runtimes_3 = data_3.groupby("dim")["standard_time_no_allocation"].agg(["mean", "std"]).reset_index()
+runtimes_4 = data_4.groupby("dim")["standard_time_no_allocation"].agg(["mean", "std"]).reset_index()
 
 
 # only plot standard runtimes
@@ -217,14 +211,14 @@ ax.errorbar(
     color=colors[3],
 )
 # Add labels and legend
-plt.xlabel("n",fontsize=19)
-plt.ylabel("Runtime (seconds)",fontsize=19)
+plt.xlabel("n", fontsize=19)
+plt.ylabel("Runtime (seconds)", fontsize=19)
 plt.xscale("log", base=2)
 plt.yscale("log")
 draw_loglog_slope(fig, ax, (64, 0.05), 1, 2, "black")
 draw_loglog_slope(fig, ax, (300, 2), 1, 4, "black")
 plt.legend()
-#plt.title(title)
+# plt.title(title)
 plt.grid(True)
 plt.tight_layout()
 plt.savefig("runtimes_only_standard_all.pdf")
@@ -232,24 +226,16 @@ plt.savefig("runtimes_only_standard_all.pdf")
 
 # plot only standard iterations
 iterations_1 = (
-    data_1.groupby("dim")["standard_iterations_no_allocation"]
-    .agg(["mean", "std"])
-    .reset_index()
+    data_1.groupby("dim")["standard_iterations_no_allocation"].agg(["mean", "std"]).reset_index()
 )
 iterations_2 = (
-    data_2.groupby("dim")["standard_iterations_no_allocation"]
-    .agg(["mean", "std"])
-    .reset_index()
+    data_2.groupby("dim")["standard_iterations_no_allocation"].agg(["mean", "std"]).reset_index()
 )
 iterations_3 = (
-    data_3.groupby("dim")["standard_iterations_no_allocation"]
-    .agg(["mean", "std"])
-    .reset_index()
+    data_3.groupby("dim")["standard_iterations_no_allocation"].agg(["mean", "std"]).reset_index()
 )
 iterations_4 = (
-    data_4.groupby("dim")["standard_iterations_no_allocation"]
-    .agg(["mean", "std"])
-    .reset_index()
+    data_4.groupby("dim")["standard_iterations_no_allocation"].agg(["mean", "std"]).reset_index()
 )
 
 fig, ax = plt.subplots(figsize=(8, 6))
@@ -291,8 +277,8 @@ ax.errorbar(
     label=r"$\tilde{E} = 0.5, \nu = 0.6$",
     color=colors[3],
 )
-plt.xlabel("n",fontsize=19)
-plt.ylabel("Timesteps",fontsize=19)
+plt.xlabel("n", fontsize=19)
+plt.ylabel("Timesteps", fontsize=19)
 plt.xscale("log", base=2)
 plt.yscale("log")
 draw_loglog_slope(fig, ax, (64, 1000), 1, 2, "black")

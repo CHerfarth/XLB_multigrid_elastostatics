@@ -85,12 +85,20 @@ title = r"$\tilde{E} = $" + str(0.5) + r", $\nu = $" + str(0.5)
 x_label = "Iteration"
 y_label = "Error"
 fig, ax = plt.subplots()
-#ax.plot(multigrid_data["iteration"], multigrid_data["residual_norm"], "-", color="red", label="Residual")
+# ax.plot(multigrid_data["iteration"], multigrid_data["residual_norm"], "-", color="red", label="Residual")
 ax.plot(multigrid_data["iteration"], multigrid_data["l2_disp"], "-", color="blue", label="L2 disp")
-ax.plot(multigrid_data["iteration"], multigrid_data["linf_disp"], "--", color="blue", label="Linf disp")
-ax.plot(multigrid_data["iteration"], multigrid_data["l2_stress"], "-", color="green", label="L2 stress")
 ax.plot(
-    multigrid_data["iteration"], multigrid_data["linf_stress"], "--", color="green", label="Linf stress"
+    multigrid_data["iteration"], multigrid_data["linf_disp"], "--", color="blue", label="Linf disp"
+)
+ax.plot(
+    multigrid_data["iteration"], multigrid_data["l2_stress"], "-", color="green", label="L2 stress"
+)
+ax.plot(
+    multigrid_data["iteration"],
+    multigrid_data["linf_stress"],
+    "--",
+    color="green",
+    label="Linf stress",
 )
 ax.grid(True)
 ax.set_xlim((0, 10))
@@ -108,11 +116,13 @@ title = r"$\tilde{E} = $" + str(0.5) + r", $\nu = $" + str(0.5)
 x_label = "Timestep"
 y_label = "Error"
 fig, ax = plt.subplots()
-#ax.plot(normal_data["iteration"], normal_data["residual_norm"], "-", color="red", label="Residual")
+# ax.plot(normal_data["iteration"], normal_data["residual_norm"], "-", color="red", label="Residual")
 ax.plot(normal_data["iteration"], normal_data["l2_disp"], "-", color="blue", label="L2 disp")
 ax.plot(normal_data["iteration"], normal_data["linf_disp"], "--", color="blue", label="Linf disp")
 ax.plot(normal_data["iteration"], normal_data["l2_stress"], "-", color="green", label="L2 stress")
-ax.plot(normal_data["iteration"], normal_data["linf_stress"], "--", color="green", label="Linf stress")
+ax.plot(
+    normal_data["iteration"], normal_data["linf_stress"], "--", color="green", label="Linf stress"
+)
 ax.grid(True)
 ax.set_xlim((0, max_wu_normal))
 plt.yscale("log")

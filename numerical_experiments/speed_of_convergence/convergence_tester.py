@@ -131,16 +131,16 @@ if __name__ == "__main__":
     finest_level.f_1 = utils.get_initial_guess_from_white_noise(
         finest_level.f_1.shape, precision_policy, dx, mean=0, seed=31
     )
-    #get exact solution
+    # get exact solution
     wp.synchronize()
     for i in range(timesteps_mg):
         residual_norm = multigrid_solver.start_v_cycle(return_residual=True)
         if residual_norm < 1e-11:
             break
-    
+
     f_exact = multigrid_solver.get_finest_level().f_1.numpy()
 
-    #now iterate again and compute error norms
+    # now iterate again and compute error norms
     benchmark_data = BenchmarkData()
     benchmark_data.wu = 0.0
     multigrid_solver = MultigridSolver(
@@ -164,7 +164,7 @@ if __name__ == "__main__":
         finest_level.f_1.shape, precision_policy, dx, mean=0, seed=31
     )
 
-    #get exact solution
+    # get exact solution
     wp.synchronize()
     for i in range(timesteps_mg):
         residual_norm = multigrid_solver.start_v_cycle(return_residual=True)

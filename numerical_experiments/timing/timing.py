@@ -206,7 +206,7 @@ if __name__ == "__main__":
         multigrid_solver.free()
         del multigrid_solver
         wp.synchronize()
-        
+
         # -------------------------------------- collect data for W-Cycle with allocation----------------------------
         start = time.time()
         converged = 0
@@ -284,7 +284,6 @@ if __name__ == "__main__":
         del multigrid_solver
         wp.synchronize()
 
-    
     if args.test_standard:
         # -----------warmup run to make sure all kernels are loaded---------------------------------# initialize stepper
         kernel_provider = KernelProvider()
@@ -307,7 +306,7 @@ if __name__ == "__main__":
         del residual
         del stepper
         # ------------------------------------- collect data for normal LB with allocation----------------------------------
-        residual_check = 100* int(nodes_x*nodes_x/(16*16))
+        residual_check = 100 * int(nodes_x * nodes_x / (16 * 16))
         start = time.time()
         solid_simulation = SimulationParams()
         solid_simulation.set_all_parameters(
@@ -326,7 +325,7 @@ if __name__ == "__main__":
         f_2 = grid.create_field(cardinality=velocity_set.q, dtype=precision_policy.store_precision)
         residual = grid.create_field(
             cardinality=velocity_set.q, dtype=precision_policy.store_precision
-        ) 
+        )
         for i in range(timesteps):
             benchmark_data.wu += 1
             if i % residual_check == 0:
