@@ -11,6 +11,7 @@ class SimulationParams:
     """
     Singleton class which holds all material paramters and simulation parameters
     """
+
     _instance = None
 
     def __new__(cls):
@@ -53,7 +54,9 @@ class SimulationParams:
         self._E = self._E * self._T / (self._L * self._L * self._kappa)
 
     def set_dx_dt(self, dx, dt):
-        assert np.isclose(dx * dx / (dt), self._dx * self._dx / (self._dt)) #assert that the ratio of dx^2/dt is constant
+        assert np.isclose(
+            dx * dx / (dt), self._dx * self._dx / (self._dt)
+        )  # assert that the ratio of dx^2/dt is constant
         self._dx = dx
         self._dt = dt
         self._T = dt

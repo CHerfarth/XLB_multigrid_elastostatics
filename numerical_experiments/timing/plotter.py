@@ -147,11 +147,12 @@ def draw_loglog_slope(
         **label_kwargs,
     )
 
+
 plt.rcParams.update({
-    'xtick.labelsize': 18,
-    'ytick.labelsize': 18,
-    'axes.titlesize': 20,
-    'legend.fontsize': 15,
+    "xtick.labelsize": 18,
+    "ytick.labelsize": 18,
+    "axes.titlesize": 20,
+    "legend.fontsize": 15,
 })
 
 # Load CSV data
@@ -175,7 +176,7 @@ standard_stats = (
 )
 
 # Plotting of Runtimes
-fig, ax = plt.subplots(figsize=(8, 6))
+fig, ax = plt.subplots(figsize=(9, 6))
 ax.errorbar(
     vcycle_stats["dim"],
     vcycle_stats["mean"],
@@ -201,17 +202,18 @@ ax.errorbar(
     fmt="s-",
     capsize=5,
     label="Standard Method",
-    color="red"
+    color="red",
 )
 
 
 # Add labels and legend
-plt.xlabel("n",fontsize=19)
-plt.ylabel("Runtime [seconds]",fontsize=19)
+plt.xlabel("n", fontsize=19)
+plt.ylabel("Runtime [seconds]", fontsize=19)
 plt.xscale("log", base=2)
 plt.yscale("log")
-#draw_loglog_slope(fig, ax, (64, 0.1), 1, 2, "black")
-#draw_loglog_slope(fig, ax, (330, 10), 1, 4, "black")
+plt.ylim(bottom=1e-2, top=5e2)
+# draw_loglog_slope(fig, ax, (64, 0.1), 1, 2, "black")
+# draw_loglog_slope(fig, ax, (330, 10), 1, 4, "black")
 plt.title(title)
 plt.legend()
 plt.grid(True)
@@ -219,7 +221,7 @@ plt.tight_layout()
 plt.savefig("runtimes.pdf")
 
 # only plot standard runtimes
-fig, ax = plt.subplots(figsize=(8, 6))
+fig, ax = plt.subplots(figsize=(9, 6))
 
 ax.errorbar(
     standard_stats["dim"],
@@ -231,10 +233,11 @@ ax.errorbar(
     color="red",
 )
 # Add labels and legend
-plt.xlabel("n",fontsize=19)
-plt.ylabel("Runtime (seconds)",fontsize=19)
+plt.xlabel("n", fontsize=19)
+plt.ylabel("Runtime (seconds)", fontsize=19)
 plt.xscale("log", base=2)
 plt.yscale("log")
+plt.ylim(bottom=1e-2, top=5e2)
 draw_loglog_slope(fig, ax, (64, 0.05), 1, 2, "black")
 draw_loglog_slope(fig, ax, (300, 2), 1, 4, "black")
 plt.title(title)
@@ -244,14 +247,10 @@ plt.savefig("runtimes_only_standard.pdf")
 
 # plot only multigrid iterations
 vcycle_iterations = (
-    vcycle_data.groupby("dim")["vcycle_iterations_no_allocation"]
-    .agg(["mean", "std"])
-    .reset_index()
+    vcycle_data.groupby("dim")["vcycle_iterations_no_allocation"].agg(["mean", "std"]).reset_index()
 )
 wcycle_iterations = (
-    wcycle_data.groupby("dim")["wcycle_iterations_no_allocation"]
-    .agg(["mean", "std"])
-    .reset_index()
+    wcycle_data.groupby("dim")["wcycle_iterations_no_allocation"].agg(["mean", "std"]).reset_index()
 )
 fig, ax = plt.subplots()
 ax.errorbar(
@@ -274,8 +273,8 @@ ax.errorbar(
 )
 plt.xscale("log", base=2)
 plt.ylim(bottom=0, top=50)
-plt.xlabel("n",fontsize=19)
-plt.ylabel("Iterations",fontsize=19)
+plt.xlabel("n", fontsize=19)
+plt.ylabel("Iterations", fontsize=19)
 plt.title(title)
 plt.legend()
 plt.tight_layout()
@@ -298,8 +297,8 @@ ax.errorbar(
     label="Timesteps",
     color="red",
 )
-plt.xlabel("n",fontsize=19)
-plt.ylabel("Timesteps",fontsize=19)
+plt.xlabel("n", fontsize=19)
+plt.ylabel("Timesteps", fontsize=19)
 plt.xscale("log", base=2)
 plt.yscale("log")
 draw_loglog_slope(fig, ax, (64, 1000), 1, 2, "black")
@@ -312,7 +311,7 @@ plt.savefig("standard_iterations.pdf")
 standard_wu = standard_data.groupby("dim")["standard_wu"].agg(["mean", "std"]).reset_index()
 vcycle_wu = vcycle_data.groupby("dim")["vcycle_wu"].agg(["mean", "std"]).reset_index()
 wcycle_wu = wcycle_data.groupby("dim")["wcycle_wu"].agg(["mean", "std"]).reset_index()
-fig, ax = plt.subplots(figsize=(8, 6))
+fig, ax = plt.subplots(figsize=(9, 6))
 ax.errorbar(
     vcycle_wu["dim"],
     vcycle_wu["mean"],
@@ -344,9 +343,10 @@ ax.errorbar(
 # Add labels and legend
 plt.xscale("log", base=2)
 plt.yscale("log")
+plt.ylim(bottom=10, top=1e6)
 draw_loglog_slope(fig, ax, (64 * 64, 1), 1, 2, "black")
-plt.xlabel("n",fontsize=19)
-plt.ylabel("WU",fontsize=19)
+plt.xlabel("n", fontsize=19)
+plt.ylabel("WU", fontsize=19)
 plt.title(title)
 plt.legend()
 plt.grid(True)
@@ -354,18 +354,34 @@ plt.tight_layout()
 plt.savefig("wu.pdf")
 
 # plot times (with allocation)
-vcycle_time_no_allocation = vcycle_data.groupby("dim")["vcycle_time_no_allocation"].agg(["mean", "std"]).reset_index()
-vcycle_time_with_allocation = vcycle_data.groupby("dim")["vcycle_time_with_allocation"].agg(["mean", "std"]).reset_index()
-wcycle_time_no_allocation = wcycle_data.groupby("dim")["wcycle_time_no_allocation"].agg(["mean", "std"]).reset_index()
-wcycle_time_with_allocation = wcycle_data.groupby("dim")["wcycle_time_with_allocation"].agg(["mean", "std"]).reset_index()
-fig, ax = plt.subplots(figsize=(8, 6))
+vcycle_time_no_allocation = (
+    vcycle_data.groupby("dim")["vcycle_time_no_allocation"].agg(["mean", "std"]).reset_index()
+)
+vcycle_time_with_allocation = (
+    vcycle_data.groupby("dim")["vcycle_time_with_allocation"].agg(["mean", "std"]).reset_index()
+)
+wcycle_time_no_allocation = (
+    wcycle_data.groupby("dim")["wcycle_time_no_allocation"].agg(["mean", "std"]).reset_index()
+)
+wcycle_time_with_allocation = (
+    wcycle_data.groupby("dim")["wcycle_time_with_allocation"].agg(["mean", "std"]).reset_index()
+)
+standard_time_no_allocation = (
+    standard_data.groupby("dim")["standard_time_no_allocation"].agg(["mean", "std"]).reset_index()
+)
+standard_time_with_allocation = (
+    standard_data.groupby("dim")["standard_time_with_allocation"].agg(["mean", "std"]).reset_index()
+)
+
+plt.ylim(bottom=1e-2, top=5e2)
+fig, ax = plt.subplots(figsize=(9, 6))
 ax.errorbar(
     vcycle_time_no_allocation["dim"],
     vcycle_time_no_allocation["mean"],
     yerr=vcycle_time_no_allocation["std"],
     fmt="o-",
     capsize=5,
-    label="V-Cycle (not with allocation time)",
+    label="V-Cycle (no allocation)",
     color="blue",
 )
 ax.errorbar(
@@ -374,7 +390,7 @@ ax.errorbar(
     yerr=vcycle_time_with_allocation["std"],
     fmt="o--",
     capsize=5,
-    label="V-Cycle (with allocation time)",
+    label="V-Cycle (with allocation)",
     color="blue",
 )
 ax.errorbar(
@@ -383,7 +399,7 @@ ax.errorbar(
     yerr=wcycle_time_no_allocation["std"],
     fmt="d-",
     capsize=5,
-    label="W-Cycle (not with allocation time)",
+    label="W-Cycle (no allocation)",
     color="green",
 )
 ax.errorbar(
@@ -392,18 +408,38 @@ ax.errorbar(
     yerr=wcycle_time_with_allocation["std"],
     fmt="d--",
     capsize=5,
-    label="W-Cycle (with allocation time)",
+    label="W-Cycle (with allocation)",
     color="green",
 )
+ax.errorbar(
+    standard_time_no_allocation["dim"],
+    standard_time_no_allocation["mean"],
+    yerr=standard_time_no_allocation["std"],
+    fmt="d-",
+    capsize=5,
+    label="Standard Method (no allocation)",
+    color="red",
+)
+ax.errorbar(
+    standard_time_with_allocation["dim"],
+    standard_time_with_allocation["mean"],
+    yerr=standard_time_with_allocation["std"],
+    fmt="d--",
+    capsize=5,
+    label="Standard Method (with allocation time)",
+    color="red",
+)
+
 
 # Add labels and legend
 plt.xscale("log", base=2)
 plt.yscale("log")
+plt.ylim(bottom=1e-2, top=5e2)
 draw_loglog_slope(fig, ax, (64 * 64, 1), 1, 2, "black")
-plt.xlabel("n",fontsize=19)
-plt.ylabel("Runtime [seconds]",fontsize=19)
+plt.xlabel("n", fontsize=19)
+plt.ylabel("Runtime [seconds]", fontsize=19)
 plt.title(title)
-plt.legend()
+plt.legend(fontsize=13)
 plt.grid(True)
 plt.tight_layout()
 plt.savefig("allocation_v_no_allocation.pdf")

@@ -27,6 +27,7 @@ class SolidMacroscopics(Operator):
         # 7: dy_sxy
         #  8: dx_sxy
     """
+
     def __init__(self, grid, omega, velocity_set=None, precision_policy=None, compute_backend=None):
         super().__init__(
             velocity_set=velocity_set,
@@ -34,7 +35,6 @@ class SolidMacroscopics(Operator):
             compute_backend=compute_backend,
         )
         self.omega = omega
-        
 
     def _construct_warp(self):
         # get warp funcs

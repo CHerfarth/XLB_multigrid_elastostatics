@@ -141,7 +141,7 @@ def get_LB_matrix(mu, theta, K, phi_x, phi_y):
 
 
 outer_iterations = 50
-inner_iterations = 100 #200
+inner_iterations = 100  # 200
 data_smoothing = list()
 
 d_nu = 1 / outer_iterations
@@ -180,8 +180,8 @@ for k in range(outer_iterations):
                         and np.abs(phi_y_val) != 0.0
                     ):
                         smoothing_factors.append(spectral_radius)
-                phi_x_val += (2 * np.pi) / (inner_iterations-2)
-            phi_y_val += (2 * np.pi) / (inner_iterations-2)
+                phi_x_val += (2 * np.pi) / (inner_iterations - 2)
+            phi_y_val += (2 * np.pi) / (inner_iterations - 2)
 
         if smoothing_factors:
             data_smoothing.append((E, nu, np.max(smoothing_factors)))

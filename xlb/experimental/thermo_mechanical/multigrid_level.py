@@ -148,6 +148,19 @@ class Level(Operator):
 
     @Operator.register_backend(ComputeBackend.WARP)
     def warp_implementation(self, multigrid, return_residual=False, timestep=0):
+        """
+        multigrid: multigrid operator which can give the next coarse level
+        self.f_1: grid with current pre-collision populations 
+            (current approximation of steady-state populations)
+        self.f_2: grid with arbitrary values 
+            (used as temp grid in smoothing steps)
+        self.f_3: grid with previous post-collision populations 
+            (only needed if Dirichlet BC applicable)
+
+        exits with:
+            one iteration of gamma-cycle scheme performed
+            self.f_1 contains updated pre-collision populations
+        """
         # set new dx, dt
         self.set_params()
         params = SimulationParams()
@@ -167,7 +180,10 @@ class Level(Operator):
 
             if self.boundary_conditions is None:
                 self.restriction(
-                    fine=self.f_3, coarse=coarse.defect_correction, fine_nodes_x=self.nodes_x, fine_nodes_y=self.nodes_y
+                    fine=self.f_3,
+                    coarse=coarse.defect_correction,
+                    fine_nodes_x=self.nodes_x,
+                    fine_nodes_y=self.nodes_y,
                 )  # restrict residual to defect correction of coarser grid
             else:
                 self.restriction(

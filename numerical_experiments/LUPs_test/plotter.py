@@ -189,10 +189,10 @@ plt.errorbar(
 max_single = round(max(single_periodic["mean"]))
 max_double = round(max(double_periodic["mean"]))
 plt.axhline(
-    y=max_single, color="blue", linestyle="--", linewidth=1.5, label="{} LUPS".format(max_single)
+    y=max_single, color="blue", linestyle="--", linewidth=1.5, label="{} MLUPS".format(max_single)
 )
 plt.axhline(
-    y=max_double, color="red", linestyle="--", linewidth=1.5, label="{} LUPS".format(max_double)
+    y=max_double, color="red", linestyle="--", linewidth=1.5, label="{} MLUPS".format(max_double)
 )
 draw_loglog_slope(fig, ax, (1000, 10), 0.01, 1, "black")
 # Add labels and legend
@@ -233,10 +233,10 @@ plt.errorbar(
 max_single = round(max(single_dirichlet["mean"]))
 max_double = round(max(double_dirichlet["mean"]))
 plt.axhline(
-    y=max_single, color="green", linestyle="--", linewidth=1.5, label="{} LUPS".format(max_single)
+    y=max_single, color="green", linestyle="--", linewidth=1.5, label="{} MLUPS".format(max_single)
 )
 plt.axhline(
-    y=max_double, color="orange", linestyle="--", linewidth=1.5, label="{} LUPS".format(max_double)
+    y=max_double, color="orange", linestyle="--", linewidth=1.5, label="{} MLUPS".format(max_double)
 )
 draw_loglog_slope(fig, ax, (1000, 10), 0.01, 1, "black")
 # Add labels and legend
