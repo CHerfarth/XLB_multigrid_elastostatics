@@ -13,6 +13,8 @@ from xlb.experimental.thermo_mechanical.kernel_provider import KernelProvider
 
 
 class SolidBaredMoments(Operator):
+    """Operator which calculates bared moments"""
+
     def __init__(self, grid, omega, velocity_set=None, precision_policy=None, compute_backend=None):
         super().__init__(
             velocity_set=velocity_set,
@@ -50,6 +52,17 @@ class SolidBaredMoments(Operator):
             omega: vec,
             theta: self.compute_dtype,
         ):
+            """
+            Calculates bared moments
+
+            f_vec: vector of pre-collision populations
+            force_x, force_y: forcing terms at lattice point
+            omega: vector of relaxation rates
+            theta: lattice parameter
+
+            returns:
+                vector containing bared moments
+            """
             bared_m = calc_moments(f_vec)
             zero_p_five = self.compute_dtype(0.5)
 
@@ -73,6 +86,18 @@ class SolidBaredMoments(Operator):
             omega: vec,
             theta: self.compute_dtype,
         ):
+            """
+            Kernel for computing bared moments
+
+            bared_moments: array to write results to
+            f: pre-collision populations
+            force: array of forcing terms
+            omega: vector of relaxation rates
+            theta: lattice parameter
+
+            exits with:
+                bared moments written to bared_moments
+            """
             i, j, k = wp.tid()
             f_vec = read_local_population(f, i, j)
             force_x = self.compute_dtype(force[0, i, j, 0])
