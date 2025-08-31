@@ -141,8 +141,8 @@ class SolidsStepper(Stepper):
             """
             Kernel for timestep with periodic BC
 
-            f_1: post-collision populations at time t
-            f_2: post-collision populations at time t - dt
+            f_1: grid of post-collision populations at time t
+            f_2: grid with arbitrary values
 
             exits with:
                 post-collision populations at time t + dt written to f_2
@@ -151,7 +151,6 @@ class SolidsStepper(Stepper):
             index = wp.vec3i(i, j, k)
 
             _f_post_collision = read_local_population(f_1, i, j)
-            _f_previous_post_collision = read_local_population(f_2, i, j)
             _f_post_stream = self.stream.warp_functional(f_1, index)
 
             force_x = self.compute_dtype(force[0, i, j, 0])

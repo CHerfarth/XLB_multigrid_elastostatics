@@ -1,4 +1,3 @@
-import numpy as np
 import warp as wp
 from xlb.experimental.thermo_mechanical.solid_simulation_params import SimulationParams
 import xlb
@@ -149,17 +148,21 @@ class Level(Operator):
     @Operator.register_backend(ComputeBackend.WARP)
     def warp_implementation(self, multigrid, return_residual=False, timestep=0):
         """
-        multigrid: multigrid operator which can give the next coarse level
-        self.f_1: grid with current pre-collision populations 
+        multigrid: instance of MultigridSolver which can give the next coarse level
+        self.f_1: grid with current pre-collision populations
             (current approximation of steady-state populations)
-        self.f_2: grid with arbitrary values 
+        self.f_2: grid with arbitrary values
             (used as temp grid in smoothing steps)
-        self.f_3: grid with previous post-collision populations 
+        self.f_3: grid with arbitrary values
+            (used to store residual)
+        self.f_4: grid with previous post-collision populations
             (only needed if Dirichlet BC applicable)
+        self.defect_correction: grid with values for external forcing
 
         exits with:
             one iteration of gamma-cycle scheme performed
             self.f_1 contains updated pre-collision populations
+            return current norm of residual if return_residual is set to True
         """
         # set new dx, dt
         self.set_params()

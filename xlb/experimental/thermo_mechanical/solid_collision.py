@@ -52,6 +52,17 @@ class SolidsCollision(Collision):
             omega: vec,
             theta: self.compute_dtype,
         ):
+            """
+            Functional for performing collision step
+
+            f_vec: vector of the 8 pre-collision populations on lattice point
+            force_x, force_y: forcing terms at lattice point
+            omega: vector of relaxation rates
+            theta: lattice parameter
+
+            returns:
+                vector of post collision populations
+            """
             m = calc_moments(f_vec)
 
             # apply half-forcing and get displacement
@@ -83,8 +94,8 @@ class SolidsCollision(Collision):
         ):
             """
             Kernel to compute the collision step for solids
-            f: pre-collision populations
-            f_out: array to write post-collision populations to
+            f: grid pre-collision populations
+            f_out: grid to write post-collision populations to
 
             exits with:
                 f_out: post-collision populations

@@ -12,6 +12,16 @@ import math
 
 
 def get_force_load(manufactured_displacement, x, y):
+    """ "
+    Calculates the force load arising from a given manufactured displacement
+
+    manufactured_displacement[0]: sympy function, dependent on x and y, giving displacement in x direction
+    manufactured_displacement[1]: sympy function, dependent on x and y, giving displacement in x direction
+    x, y: sympy variables
+
+    returns:
+        callable lambda func
+    """
     params = SimulationParams()
     mu = params.mu_unscaled
     K = params.K_unscaled
@@ -30,6 +40,18 @@ def get_force_load(manufactured_displacement, x, y):
 
 
 def get_function_on_grid(f, x, y, dx, grid):
+    """
+    Takes sympy function and evaluates it on given grid
+    Note: no grid displacement assumed
+
+    f: sympy func
+    x,y: sympy variables
+    dx: grid spacing
+    grid: grid to evaluate f on
+
+    returns:
+        array with evaluated entries of f
+    """
     f = np.vectorize(sympy.lambdify([x, y], f, "numpy"))
     f_scaled = lambda x_node, y_node: f(x_node * dx, y_node * dx)
     f_on_grid = np.fromfunction(f_scaled, shape=grid.shape)
@@ -37,6 +59,16 @@ def get_function_on_grid(f, x, y, dx, grid):
 
 
 def get_error_norms(current_macroscopics, expected_macroscopics, dx, timestep=0):
+    """
+    Calculates error norms
+
+    current_macroscopics: 4d grid of current (simulated) macroscopics
+    expected_macroscopics: 3d grid of expected macroscopics
+    dx: grid spacing
+
+    returns:
+        error norms in displacement and stress
+    """
     error_matrix = np.subtract(current_macroscopics[0:4, :, :, 0], expected_macroscopics[0:4, :, :])
     # step 1: handle displacement
     l2_disp = np.sqrt(np.nansum(np.linalg.norm(error_matrix[0:2, :, :], axis=0) ** 2)) * dx
@@ -58,6 +90,16 @@ def rmsd(array):
 
 
 def get_expected_stress(manufactured_displacement, x, y):
+    """
+    Calculates expected stress from manufactured displacement
+
+    manufactured_displacement[0]: sympy function, dependent on x and y, giving displacement in x direction
+    manufactured_displacement[1]: sympy function, dependent on x and y, giving displacement in x direction
+    x, y: sympy variables
+
+    returns:
+        stress xx, stress yy, stress xy as sympy funcs
+    """
     params = SimulationParams()
     lamb = params.lamb_unscaled  # unscaled, because we want the expected stress in normal unit
     mu = params.mu_unscaled
@@ -75,6 +117,16 @@ def get_expected_stress(manufactured_displacement, x, y):
 def restrict_solution_to_domain(
     array, potential, dx
 ):  # ToDo: make more efficient (fancy numpy funcs)
+    """
+    Sets all entries of grid which are outside the boundary to nans
+
+    array: numpy array
+    potential: potential defining boundary
+    dx: grid spacing
+
+    returns:
+        array with values outside boundary set to nans
+    """
     if potential == None:
         return array
     for i in range(array.shape[1]):
@@ -85,6 +137,9 @@ def restrict_solution_to_domain(
 
 
 def output_image(macroscopics, timestep, name, potential=None):
+    """
+    Outputs vtk and png of macroscopics at specific timestep
+    """
     dis_x = macroscopics[0, :, :, 0]
     dis_y = macroscopics[1, :, :, 0]
     s_xx = macroscopics[2, :, :, 0]
@@ -113,7 +168,19 @@ def process_error(macroscopics, expected_macroscopics, timestep, dx, norms_over_
     return l2_disp, linf_disp, l2_stress, linf_stress
 
 
-def get_initial_guess_from_white_noise(shape, precision_policy, dx, mean=0, seed=31):
+def get_initial_guess_from_white_noise(shape, precision_policy, dx, mean=0, scale=1.0, seed=31):
+    """
+    Guesses starting populations from white noise (Gaussian)
+
+    shape: shape of grid
+    precisio_policy:
+    dx:  grid spacing
+    mean, scale: parameters of gaussian
+    seed: for rng
+
+    returns:
+        populations, set from white noise, allocated as warp array
+    """
     kernel_provider = KernelProvider()
     convert_moments_to_populations = kernel_provider.convert_moments_to_populations
 
@@ -129,7 +196,7 @@ def get_initial_guess_from_white_noise(shape, precision_policy, dx, mean=0, seed
     rng = np.random.default_rng(seed)
 
     # create white noise array on host
-    host = rng.normal(loc=mean, scale=1.0, size=shape)
+    host = rng.normal(loc=mean, scale=scale, size=shape)
     host[2:, :, :, :] = np.zeros_like(host[2:, :, :, :])
     # calculate infinitesimal strain tensor
     u_x = host[0, :, :, 0]
@@ -187,6 +254,9 @@ def get_initial_guess_from_white_noise(shape, precision_policy, dx, mean=0, seed
 
 
 def last_n_avg(data, n):
+    """
+    Takes the average of the last n entries of data
+    """
     length = len(data)
     weight = 1 / min(n, length)
     val = 0.0
@@ -311,6 +381,9 @@ def plot_x_slice(
 
 
 def rate_of_convergence(data, column_header, min=None, max=None):
+    """
+    Calculates the rate of convergence of column_header stored in data
+    """
     if min is not None and max is not None:
         filtered = [row for row in data[column_header] if row > min and row < max]
     elif min is not None:

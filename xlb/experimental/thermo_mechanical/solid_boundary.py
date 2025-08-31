@@ -63,6 +63,20 @@ class SolidsBoundary(Operator):
             K: self.compute_dtype,
             mu: self.compute_dtype,
         ):
+            """
+            Functional for reconstructing a single missing incoming population through Dirichlet BC
+
+            old_direction: direction index from node to ghost node
+            f_current_vec: vector of populations after streaming step at time t, missing incoming population not applied yet
+            f_previous_post_collision_vec: vector of populations after collision step at time t - Delta t
+            bared_m_vec: vector of bared moments
+            u_x, u_y: boundary conditions
+            q_ij: distance between node and ghost node
+            K, mu: material parameters
+
+            returns:
+                vector of populations with missing population reconstructed
+            """
             new_direction = opp_indices[old_direction]
             x_dir = c[0, new_direction]
             y_dir = c[1, new_direction]
@@ -117,9 +131,24 @@ class SolidsBoundary(Operator):
             tau_t: self.compute_dtype,
             theta: self.compute_dtype,
         ):
-            theta = self.compute_dtype(1.0) / self.compute_dtype(
-                3.0
-            )  # assuming this, see issue on github
+            """
+            Functional for reconstruction a single missing incoming population through VN BC
+
+            old_direction: direction from node to ghost node
+            f_post_stream_vec: vector of populations after streaming step at time t, missing incoming population not applied yet
+            f_post_collision_vec: vector of populations after collision step at time t
+            bared_m_vec: vector of bared moments
+            n_x, n_y: normal vector
+            T_x, T_Y: boundary conditions
+            q_ij: distance between node and ghost node
+            force_x, force_y: forcing terms
+            K, mu: material parameters
+            tau_t: relaxation time of third-order moments (typically 0.5)
+            theta: lattice parameter
+
+            returns:
+                vector of populations with missing population reconstructed
+            """
             new_direction = opp_indices[old_direction]
             x_dir = c[0, new_direction]
             y_dir = c[1, new_direction]
@@ -248,6 +277,23 @@ class SolidsBoundary(Operator):
             mu: self.compute_dtype,
             theta: self.compute_dtype,
         ):
+            """
+            Functional for applying boundary conditions at lattice point (i,j) after streaming at time t
+
+            f_post_stream_vec: vector of populations after streaming at time t, boundary conditions not applied yet
+            f_post_collision_vec: vector of populations after collision at time t
+            f_previous_post_collision_vec: vector of populations after collision at time t - Delta t
+            i,j: indices of lattice point
+            boundary_info: array encoding the type of node (interior, boundary, ghost) and which incoming populations to reconstruct
+            boundary_vals: array storing values needed for reconstructing missing populations at boundary
+            force_x, force_y: forcing terms at lattice point
+            bared_m_vec: vector of bared moments
+            K, mu: material params
+            theta: lattice parameter
+
+            returns:
+                vector of populations after streaming at time t, with boundary conditions applied
+            """
             f_out_vec = f_post_stream_vec
             # -------------outside domain--------------
             if boundary_info[0, i, j, 0] == wp.int8(0):  # if outside domain, just set to 0

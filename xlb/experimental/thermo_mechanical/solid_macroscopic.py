@@ -58,6 +58,20 @@ class SolidMacroscopics(Operator):
             T: self.compute_dtype,
             kappa: self.compute_dtype,
         ):
+            """
+            Functional for computing macroscopics at
+
+            bared_m: vector of bared moments
+            force_x, force_y: forcing terms at lattice point
+            omega: vector of omega terms
+            theta: lattice parameter
+            L: reference length (needed for readding dimensions)
+            T: reference time
+            kappa: damping term
+
+            returns:
+                vector of macroscopics
+            """
             # --------Step 1: calculate macroscopics------------------
             tau_t = self.compute_dtype(0.5)
             dev_factor = self.compute_dtype(2.0) / (
@@ -106,7 +120,9 @@ class SolidMacroscopics(Operator):
             kappa: self.compute_dtype,
         ):
             """
-            Macroscopics: array to write macroscopics to
+            Kernel for computing macroscopics
+
+            macroscopics: array to write macroscopics to
             bared_moments: array with bared moments at all nodes
             force: array with force at all nodes
 

@@ -136,7 +136,3 @@ class SimulationParams:
     @property
     def lamb(self):
         return self._lamb
-
-    """@property
-    def precision_policy(self):
-        return self._precision_policy"""
