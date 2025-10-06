@@ -9,7 +9,7 @@ import xlb.experimental.multigrid_elastostatics.solid_utils as utils
 # these are the global variables needed throughout the simulation
 class SimulationParams:
     """
-    Singleton class which holds all material paramters and simulation parameters
+    Singleton class which holds all material parameters and simulation parameters
     (This means these parameters do not need to be explicitly passed to every function)
     """
 

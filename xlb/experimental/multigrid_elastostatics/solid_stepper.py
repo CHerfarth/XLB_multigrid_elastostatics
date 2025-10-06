@@ -38,10 +38,13 @@ class SolidsStepper(Stepper):
     def __init__(self, grid, force_load, boundary_conditions=None, boundary_values=None):
         """
         Initializer
-
+        
+        grid: xlb grid object, define domain size and resolution
         force_load: expected as callable function (e.g. lambda function)
-        boundary_condition: when simulating with Dirichlet or VN; 4d warp array specifiying boundary nodes, type of boundary conditions and missing populations (see solid_boundary.py)
-        boundary_values: when simulating with Dirichlet or VN; 4d warp array with floating point values needed for reconstruction of missing populations on boundary (see solid_boundary.py)
+        boundary_condition: when simulating with Dirichlet or VN; 4d warp array specifiying 
+            boundary nodes, type of boundary conditions and missing populations (see solid_boundary.py)
+        boundary_values: when simulating with Dirichlet or VN; 4d warp array with floating point 
+            values needed for reconstruction of missing populations on boundary (see solid_boundary.py)
         """
 
         super().__init__(grid, boundary_conditions)
@@ -111,11 +114,6 @@ class SolidsStepper(Stepper):
             self.grid, self.omega, self.velocity_set, self.precision_policy, self.compute_backend
         )
         self.equilibrium = None  # needed?
-
-        # ----------create field for temp stuff------------
-        self.temp_f = grid.create_field(
-            cardinality=self.velocity_set.q, dtype=self.precision_policy.store_precision
-        )
 
     def _construct_warp(self):
         # get kernels
@@ -242,7 +240,7 @@ class SolidsStepper(Stepper):
 
         params = SimulationParams()
         theta = params.theta
-        if self.boundary_conditions == None:
+        if self.boundary_conditions is None:
             wp.launch(
                 self.warp_kernel[0],
                 inputs=[f_1, f_2, self.force, self.omega, theta],

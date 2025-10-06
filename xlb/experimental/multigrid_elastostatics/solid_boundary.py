@@ -67,8 +67,10 @@ class SolidsBoundary(Operator):
             Functional for reconstructing a single missing incoming population through Dirichlet BC
 
             old_direction: direction index from node to ghost node
-            f_current_vec: vector of populations after streaming step at time t, missing incoming population not applied yet
-            f_previous_post_collision_vec: vector of populations after collision step at time t - Delta t
+            f_current_vec: vector of populations after streaming step at time t
+                 with missing incoming population not applied yet
+            f_previous_post_collision_vec: vector of populations 
+                after collision step at time t - Delta t
             bared_m_vec: vector of bared moments
             u_x, u_y: boundary conditions
             q_ij: distance between node and ghost node
@@ -134,8 +136,11 @@ class SolidsBoundary(Operator):
             """
             Functional for reconstruction a single missing incoming population through VN BC
 
+            Note: currently only zeroth order correction is implemented
+
             old_direction: direction from node to ghost node
-            f_post_stream_vec: vector of populations after streaming step at time t, missing incoming population not applied yet
+            f_post_stream_vec: vector of populations after streaming step at time t 
+                with missing incoming population not applied yet
             f_post_collision_vec: vector of populations after collision step at time t
             bared_m_vec: vector of bared moments
             n_x, n_y: normal vector
@@ -278,14 +283,18 @@ class SolidsBoundary(Operator):
             theta: self.compute_dtype,
         ):
             """
-            Functional for applying boundary conditions at lattice point (i,j) after streaming at time t
+            Functional for applying boundary conditions at
+                lattice point (i,j) after streaming at time t
 
-            f_post_stream_vec: vector of populations after streaming at time t, boundary conditions not applied yet
+            f_post_stream_vec: vector of populations after streaming at time t
+                with boundary conditions not applied yet
             f_post_collision_vec: vector of populations after collision at time t
             f_previous_post_collision_vec: vector of populations after collision at time t - Delta t
             i,j: indices of lattice point
-            boundary_info: array encoding the type of node (interior, boundary, ghost) and which incoming populations to reconstruct
-            boundary_vals: array storing values needed for reconstructing missing populations at boundary
+            boundary_info: array encoding the type of node (interior, boundary, ghost)
+                and which incoming populations to reconstruct
+            boundary_vals: array storing values needed for reconstructing
+                missing populations at boundary
             force_x, force_y: forcing terms at lattice point
             bared_m_vec: vector of bared moments
             K, mu: material params
@@ -353,74 +362,18 @@ class SolidsBoundary(Operator):
                         )
             return f_out_vec
 
-        @wp.kernel
-        def kernel(
-            f_out: wp.array4d(dtype=self.store_dtype),
-            f_post_stream: wp.array4d(dtype=self.store_dtype),
-            f_post_collision: wp.array4d(dtype=self.store_dtype),
-            f_previous_post_collision: wp.array4d(dtype=self.store_dtype),
-            boundary_array: wp.array4d(dtype=wp.int8),
-            boundary_values: wp.array4d(dtype=self.store_dtype),
-            force: wp.array4d(dtype=self.store_dtype),
-            K: self.compute_dtype,
-            mu: self.compute_dtype,
-            theta: self.compute_dtype,
-        ):
-            i, j, k = wp.tid()  # for 2d k will equal 1
-            _f_post_stream_vec = read_local_population(f_post_stream, i, j)
-            _f_post_collision_vec = read_local_population(f_post_collision, i, j)
-            _f_previous_post_collision_vec = read_local_population(f_previous_post_collision, i, j)
-            _bared_m_vec = read_local_population(bared_moments, i, j)
-            force_x = self.compute_dtype(force[0, i, j, 0])
-            force_y = self.compute_dtype(force[1, i, j, 0])
-            _f_out = functional(
-                f_post_stream_vec=_f_post_stream_vec,
-                f_post_collision_vec=_f_post_collision_vec,
-                f_previous_post_collision_vec=_f_previous_post_collision_vec,
-                i=i,
-                j=j,
-                boundary_info=boundary_array,
-                boundary_vals=boundary_values,
-                force_x=force_x,
-                force_y=force_y,
-                bared_m_vec=_bared_m_vec,
-                K=K,
-                mu=mu,
-                theta=theta,
-            )
-
-            write_population_to_global(f_out, f_out_vec, i, j)
-
+        # Kernel is not implemented. Boundary conditions are to be applied from 
+        # inside a seperate kernel by calling the functional above
+        # (see solid_stepper.py or multigrid_stepper.py)
         return functional, None
 
     @Operator.register_backend(ComputeBackend.WARP)
     def warp_implementation(
-        self, f_out, f_post_stream, f_post_collision, f_previous_post_collision, bared_moments
+        self
     ):
-        # Launch the warp kernel
-        params = SimulationParams()
-        K = params.K
-        mu = params.mu
-        theta = params.theta
-
-        wp.launch(
-            self.warp_kernel,
-            inputs=[
-                f_out,
-                f_post_stream,
-                f_post_collision,
-                f_previous_post_collision,
-                self.boundary_array,
-                self.boundary_values,
-                self.force,
-                bared_moments,
-                K,
-                mu,
-                theta,
-            ],
-            dim=f_out.shape[1:],
+        raise NotImplementedError(
+            "Boundary conditions are to be applied by calling the functional, not through a kernel"
         )
-
 
 # --------------utils used to construct bc arrays----------------
 def init_bc_from_lambda(

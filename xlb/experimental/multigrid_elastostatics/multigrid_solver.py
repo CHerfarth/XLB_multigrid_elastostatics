@@ -19,7 +19,12 @@ import sympy
 
 class MultigridSolver:
     """
-    A class implementing a multigrid iterative solver for elliptic PDEs.
+    A class for setting up a multigrid iterative solver for linear
+        elastostatics, based on an LB scheme by Boolakee et al.
+    At initialization, a hierarchy of grids ("levels") is created.
+    Each level contains its own grid, fields, and a stepper for
+        performing smoothing steps.
+    A multigrid iteration can then be started from the finest level.
     """
 
     def __init__(
@@ -38,9 +43,26 @@ class MultigridSolver:
         boundary_conditions=None,
         boundary_values=None,
         potential=None,
-        output_images=False,
         error_correction_iterations=1,  # by default do V-Cycle
     ):
+        """
+        Initializes multigrid solver
+
+        nodes_x, nodes_y: number of nodes in x and y direction on finest grid
+        length_x, length_y: physical dimensions of the domain
+        dt: time step on finest grid
+        force_load: lambda function (x,y) giving the force load at position (x,y)
+        gamma: relaxation parameter for smoothing step
+        v1, v2: nr of pre- and post-smoothing steps
+        max_levels: maximum number of levels to use (if None, use as many as possible)
+        coarsest_level_iter: number of smoothing steps on coarsest level
+        boundary_conditions: info array of boundary conditions on finest grid
+            (if using Dirichlet or VN BC)
+        boundary_values: array of boundary values on finest grid
+        potential: sympy expression for boundary potential (if using Dirichlet or VN BC)
+        error_correction_iterations: number of recursive calls to 
+            multigrid stepper on coarser levels (1 -> V-cycle, 2 -> W-cycle, etc.)
+        """
         precision_policy = DefaultConfig.default_precision_policy
         compute_backend = DefaultConfig.default_backend
         velocity_set = DefaultConfig.velocity_set
@@ -107,15 +129,24 @@ class MultigridSolver:
             self.levels.append(level)
 
     def get_next_level(self, level_num):
+        """
+        Returns next coarser level if it exists, else None
+        """
         if level_num + 1 < self.max_levels:
             return self.levels[level_num + 1]
         else:
             return None
 
     def get_finest_level(self):
+        """
+        Returns finest level (level 0)
+        """
         return self.levels[0]
 
     def free(self):
+        """
+        Free device memory allocated for all levels
+        """
         for level in self.levels:
             del level.f_1
             del level.f_2
@@ -124,10 +155,11 @@ class MultigridSolver:
             del level.defect_correction
             del level
 
-    def start_v_cycle(self, return_residual=False, timestep=0):
-        finest_level = self.get_finest_level()
-        return finest_level(self, return_residual, timestep)
-
     def get_macroscopics(self, output_array):
         finest_level = self.get_finest_level()
         finest_level.stepper.get_macroscopics(f=finest_level.f_1, output_array=output_array)
+
+    #This function is deprecated and should no longer be used
+    def start_v_cycle(self, return_residual=False, timestep=0):
+        finest_level = self.get_finest_level()
+        return finest_level(self, return_residual, timestep)

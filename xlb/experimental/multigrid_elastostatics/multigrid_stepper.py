@@ -32,8 +32,23 @@ from xlb.experimental.multigrid_elastostatics.kernel_provider import KernelProvi
 
 
 class MultigridStepper(Stepper):
+    """
+    Performs smoothing steps needed by multigrid elastostatics scheme
+
+    """
     def __init__(self, grid, force_load, gamma, boundary_conditions=None, boundary_values=None):
-        super().__init__(grid, boundary_conditions)
+        """
+        Initializer
+
+        grid: xlb grid object, define domain size and resolution
+        force_load: expected as callable function (e.g. lambda function)
+        boundary_condition: when simulating with Dirichlet or VN; 4d warp array specifiying 
+            boundary nodes, type of boundary conditions and missing populations (see solid_boundary.py)
+        boundary_values: when simulating with Dirichlet or VN; 4d warp array with floating point 
+            values needed for reconstruction of missing populations on boundary (see solid_boundary.py)
+        """
+
+        super().__init__(grid, boundary_conditions, compute_backend=ComputeBackend.WARP)
         self.grid = grid
         self.boundary_conditions = boundary_conditions
         self.boundary_values = boundary_values
@@ -110,11 +125,6 @@ class MultigridStepper(Stepper):
         )
         self.equilibrium = None  # needed?
 
-        # ----------create field for temp stuff------------
-        self.temp_f = grid.create_field(
-            cardinality=self.velocity_set.q, dtype=self.precision_policy.store_precision
-        )
-
     def _construct_warp(self):
         # get kernels
         kernel_provider = KernelProvider()
@@ -137,6 +147,20 @@ class MultigridStepper(Stepper):
             gamma: self.compute_dtype,
             defect_factor: self.compute_dtype,
         ):
+            """
+            Kernel for smoothing step with periodic BC
+
+            f_1: grid of post-collision populations at smoothing step i
+            f_2: grid of pre-collision populations at smoothing step i
+            defect_correction: grid with defect correction populations
+            force: grid with forcing terms
+            gamma: relaxation parameter
+            defect_factor: factor for defect correction term
+                (usually 1.0, can be set to 0.0 to disable defect correction)
+
+            exits with:
+                pre-collision populations at smoothing step i+1 written to f_2
+            """
             i, j, k = wp.tid()
             index = wp.vec3i(i, j, k)
 
@@ -169,6 +193,28 @@ class MultigridStepper(Stepper):
             theta: self.compute_dtype,
             defect_factor: self.compute_dtype,
         ):
+            """
+            Kernel for smoothing step with Dirichlet/VN BC
+            (only Dirichlet with first oder correction)
+
+            f_1: grid of post-collision populations at smoothing step i
+            f_2: grid of pre-collision populations at smoothing step i
+            f_3: grid of post-collision populations at smoothing step i-1
+            defect_correction: grid with defect correction populations
+            force: grid with forcing terms
+            boundary_info: array encoding node type and populations to reconstruct for BC
+                (see solid_boundary.py)
+            boundary_vals: array encoding boundary values for BC
+            omega: vector of omega values
+            gamma: relaxation parameter
+            K, mu: material parameters
+            theta: lattice parameter
+            defect_factor: factor for defect correction term
+                (usually 1.0, can be set to 0.0 to disable defect correction)
+
+            exits with:
+                pre-collision populations at smoothing step i+1 written to f_2
+            """
             i, j, k = wp.tid()
             index = wp.vec3i(i, j, k)
 
@@ -223,6 +269,25 @@ class MultigridStepper(Stepper):
             theta: self.compute_dtype,
             res_norm: wp.array1d(dtype=self.store_dtype),
         ):
+            """
+            Computes squared L2 norm of residual of elastostatic LSE
+            (with Dirichlet/VN BC)
+
+            f_1: grid of post-collision populations at smoothing step i
+            f_2: grid of pre-collision populations at smoothing step i
+            f_3: grid of post-collision populations at smoothing step i-1
+            force: grid with forcing terms
+            boundary_info: array encoding node type and populations to reconstruct for BC
+                (see solid_boundary.py)
+            boundary_vals: array encoding boundary values for BC
+            omega: vec of omega values
+            K, mu: material parameters
+            theta: lattice parameter
+            res_norm: 1d warp array to store result
+
+            exits with:
+                squared L2 norm of residual written to res_norm[0]
+            """
             i, j, k = wp.tid()
             index = wp.vec3i(i, j, k)
 
@@ -263,9 +328,20 @@ class MultigridStepper(Stepper):
         @wp.kernel
         def kernel_residual_norm_squared_no_bc(
             f_1: wp.array4d(dtype=self.store_dtype),  # post-collision
-            f_2: wp.array4d(dtype=self.store_dtype),  # old pre-collision
+            f_2: wp.array4d(dtype=self.store_dtype),  # pre-collision
             res_norm: wp.array1d(dtype=self.store_dtype),
         ):
+            """
+            Computes squared L2 norm of residual of elastostatic LSE
+            (with Dirichlet/VN BC)
+
+            f_1: grid of post-collision populations at smoothing step i
+            f_2: grid of pre-collision populations at smoothing step i
+            res_norm: 1d warp array to store result
+
+            exits with:
+                squared L2 norm of residual written to res_norm[0]
+            """
             i, j, k = wp.tid()
             index = wp.vec3i(i, j, k)
 
@@ -296,6 +372,19 @@ class MultigridStepper(Stepper):
         gamma=None,
         defect_factor=1.0,
     ):  # f_3 with previous post-collision population
+        """
+        Performs one smoothing step of multigrid LB scheme
+
+        f_1: grid of pre-collision populations at smoothing step i
+        f_2: grid with arbitrary values
+        f_3: grid of post-collision populations at smoothing step i-1
+            (only needed for BC, if periodic BC f_3 can be filled with arbitrary vals)
+        defect_correction: grid with defect correction values
+        f_3_uninitialized: set to True if no post-collision populations from previous step available
+            (this is e.g. the case if f_1 is freshly prolongated from a coarser grid)
+        gamma: relaxation parameter
+        defect_factor: multiplicative factor for defect correction (set to 0.0 for no correction)
+        """
         if gamma is None:
             gamma = self.gamma
         self.collision(f_1, f_2, self.force, self.omega)
@@ -333,6 +422,16 @@ class MultigridStepper(Stepper):
             )
 
     def get_residual_norm(self, f_1, f_2):
+        """
+        Get residual of elastostatic LSE for current approximation f_1
+
+
+        f_1: grid with pre-collision population at smoothing step i
+        f_2: grid with arbitrary values
+
+        returns:
+            norm of residual, normalised by grid shape
+        """
         self.collision(f_1, f_2, self.force, self.omega)
         res_norm = wp.zeros(shape=(1), dtype=self.store_dtype)
         if self.boundary_conditions is None:
@@ -367,12 +466,24 @@ class MultigridStepper(Stepper):
         return math.sqrt(1 / (f_1.shape[0] * f_1.shape[1] * f_1.shape[2]) * res_norm.numpy()[0])
 
     def get_macroscopics(self, f, output_array):
+        """
+        Gets macroscopic values
+
+        f: grid with pre-collision populations at smoothing step i
+        output_array: grid with arbitary values
+
+        exits with:
+            macroscopics written to output_array
+        """
         self.bared_moments(f=f, output_array=output_array, force=self.force)
         return self.macroscopic(
             bared_moments=output_array, output_array=output_array, force=self.force
         )
 
     def add_boundary_conditions(self, boundary_conditions, boundary_values):
+        """
+        Manually adds boundry conditions if they werent set before
+        """
         self.boundary_conditions = boundary_conditions
         self.boundary_values = boundary_values
         self.boundaries = SolidsBoundary(
@@ -383,4 +494,7 @@ class MultigridStepper(Stepper):
         )
 
     def collide(self, f_1, f_2):
+        """
+        Perform collision step
+        """
         self.collision(f_1, f_2, self.force, self.omega)
