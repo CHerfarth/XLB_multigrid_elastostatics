@@ -4,8 +4,8 @@ from typing import Any
 import sympy
 import numpy as np
 from xlb.utils import save_fields_vtk, save_image
-from xlb.experimental.thermo_mechanical.solid_simulation_params import SimulationParams
-from xlb.experimental.thermo_mechanical.kernel_provider import KernelProvider
+from xlb.experimental.multigrid_elastostatics.solid_simulation_params import SimulationParams
+from xlb.experimental.multigrid_elastostatics.kernel_provider import KernelProvider
 import matplotlib.pyplot as plt
 import statistics
 import math

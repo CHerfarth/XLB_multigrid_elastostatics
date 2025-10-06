@@ -1,5 +1,5 @@
 from xlb.operator import Operator
-from xlb.experimental.thermo_mechanical.kernel_provider import KernelProvider
+from xlb.experimental.multigrid_elastostatics.kernel_provider import KernelProvider
 from xlb.compute_backend import ComputeBackend
 import warp as wp
 

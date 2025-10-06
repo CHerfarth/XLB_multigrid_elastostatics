@@ -8,10 +8,10 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from matplotlib.ticker import FuncFormatter
 from scipy.interpolate import griddata
-from xlb.experimental.thermo_mechanical.solid_stepper import SimulationParams
-from xlb.experimental.thermo_mechanical.solid_stepper import SolidsStepper
-from xlb.experimental.thermo_mechanical.solid_collision import SolidsCollision
-from xlb.experimental.thermo_mechanical.kernel_provider import KernelProvider
+from xlb.experimental.multigrid_elastostatics.solid_stepper import SimulationParams
+from xlb.experimental.multigrid_elastostatics.solid_stepper import SolidsStepper
+from xlb.experimental.multigrid_elastostatics.solid_collision import SolidsCollision
+from xlb.experimental.multigrid_elastostatics.kernel_provider import KernelProvider
 import math
 import warp as wp
 import argparse

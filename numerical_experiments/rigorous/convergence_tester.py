@@ -9,10 +9,10 @@ import numpy as np
 import sympy
 import csv
 import math
-import xlb.experimental.thermo_mechanical.solid_utils as utils
-from xlb.experimental.thermo_mechanical.solid_simulation_params import SimulationParams
-from xlb.experimental.thermo_mechanical.multigrid_solver import MultigridSolver
-from xlb.experimental.thermo_mechanical.benchmark_data import BenchmarkData
+import xlb.experimental.multigrid_elastostatics.solid_utils as utils
+from xlb.experimental.multigrid_elastostatics.solid_simulation_params import SimulationParams
+from xlb.experimental.multigrid_elastostatics.multigrid_solver import MultigridSolver
+from xlb.experimental.multigrid_elastostatics.benchmark_data import BenchmarkData
 import argparse
 import pandas as pd
 

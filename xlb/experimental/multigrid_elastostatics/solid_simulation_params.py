@@ -3,13 +3,14 @@ from xlb.precision_policy import PrecisionPolicy
 from typing import Any
 import sympy
 import numpy as np
-import xlb.experimental.thermo_mechanical.solid_utils as utils
+import xlb.experimental.multigrid_elastostatics.solid_utils as utils
 
 
 # these are the global variables needed throughout the simulation
 class SimulationParams:
     """
     Singleton class which holds all material paramters and simulation parameters
+    (This means these parameters do not need to be explicitly passed to every function)
     """
 
     _instance = None
@@ -54,6 +55,10 @@ class SimulationParams:
         self._E = self._E * self._T / (self._L * self._L * self._kappa)
 
     def set_dx_dt(self, dx, dt):
+        """
+        Allows setting of spatial and temporal resolution
+        Maintaining diffusive scaling is enforced
+        """
         assert np.isclose(
             dx * dx / (dt), self._dx * self._dx / (self._dt)
         )  # assert that the ratio of dx^2/dt is constant

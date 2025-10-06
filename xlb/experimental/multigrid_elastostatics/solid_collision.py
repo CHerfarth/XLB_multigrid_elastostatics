@@ -10,9 +10,9 @@ from xlb.operator import Operator
 from xlb.velocity_set import VelocitySet
 from functools import partial
 
-import xlb.experimental.thermo_mechanical.solid_utils as utils
-from xlb.experimental.thermo_mechanical.solid_simulation_params import SimulationParams
-from xlb.experimental.thermo_mechanical.kernel_provider import KernelProvider
+import xlb.experimental.multigrid_elastostatics.solid_utils as utils
+from xlb.experimental.multigrid_elastostatics.solid_simulation_params import SimulationParams
+from xlb.experimental.multigrid_elastostatics.kernel_provider import KernelProvider
 
 
 class SolidsCollision(Collision):

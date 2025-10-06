@@ -4,7 +4,7 @@ from xlb.compute_backend import ComputeBackend
 from xlb.precision_policy import PrecisionPolicy
 from xlb.grid import grid_factory
 import xlb.experimental
-from xlb.experimental.thermo_mechanical.solid_stepper import SolidsStepper
+from xlb.experimental.multigrid_elastostatics.solid_stepper import SolidsStepper
 from xlb.utils import save_fields_vtk, save_image
 import xlb.velocity_set
 import warp as wp
@@ -13,10 +13,10 @@ from typing import Any
 import sympy
 import csv
 import math
-import xlb.experimental.thermo_mechanical.solid_utils as utils
+import xlb.experimental.multigrid_elastostatics.solid_utils as utils
 import argparse
 import copy
-import xlb.experimental.thermo_mechanical.solid_bounceback as bc
+import xlb.experimental.multigrid_elastostatics.solid_bounceback as bc
 
 
 def write_results(norms_over_time, name):

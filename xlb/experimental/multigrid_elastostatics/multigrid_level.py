@@ -1,21 +1,21 @@
 import warp as wp
-from xlb.experimental.thermo_mechanical.solid_simulation_params import SimulationParams
+from xlb.experimental.multigrid_elastostatics.solid_simulation_params import SimulationParams
 import xlb
 from xlb.compute_backend import ComputeBackend
 from xlb.precision_policy import PrecisionPolicy
 from xlb.grid import grid_factory
-from xlb.experimental.thermo_mechanical.multigrid_stepper import MultigridStepper
-import xlb.experimental.thermo_mechanical.solid_utils as utils
-from xlb.experimental.thermo_mechanical.benchmark_data import BenchmarkData
-from xlb.experimental.thermo_mechanical.kernel_provider import KernelProvider
-import xlb.experimental.thermo_mechanical.solid_boundary as bc
+from xlb.experimental.multigrid_elastostatics.multigrid_stepper import MultigridStepper
+import xlb.experimental.multigrid_elastostatics.solid_utils as utils
+from xlb.experimental.multigrid_elastostatics.benchmark_data import BenchmarkData
+from xlb.experimental.multigrid_elastostatics.kernel_provider import KernelProvider
+import xlb.experimental.multigrid_elastostatics.solid_boundary as bc
 from xlb import DefaultConfig
 import math
 from typing import Any
 import sympy
 from xlb.operator import Operator
-from xlb.experimental.thermo_mechanical.multigrid_prolongation import Prolongation
-from xlb.experimental.thermo_mechanical.multigrid_restriction import Restriction
+from xlb.experimental.multigrid_elastostatics.multigrid_prolongation import Prolongation
+from xlb.experimental.multigrid_elastostatics.multigrid_restriction import Restriction
 
 
 class Level(Operator):

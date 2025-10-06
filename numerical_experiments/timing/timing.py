@@ -3,18 +3,18 @@ import sys
 from xlb.compute_backend import ComputeBackend
 from xlb.precision_policy import PrecisionPolicy
 from xlb.grid import grid_factory
-from xlb.experimental.thermo_mechanical.solid_stepper import SolidsStepper
+from xlb.experimental.multigrid_elastostatics.solid_stepper import SolidsStepper
 import xlb.velocity_set
 import warp as wp
 import numpy as np
 import sympy
 import csv
 import math
-import xlb.experimental.thermo_mechanical.solid_utils as utils
-from xlb.experimental.thermo_mechanical.solid_simulation_params import SimulationParams
-from xlb.experimental.thermo_mechanical.multigrid_solver import MultigridSolver
-from xlb.experimental.thermo_mechanical.benchmark_data import BenchmarkData
-from xlb.experimental.thermo_mechanical.kernel_provider import KernelProvider
+import xlb.experimental.multigrid_elastostatics.solid_utils as utils
+from xlb.experimental.multigrid_elastostatics.solid_simulation_params import SimulationParams
+from xlb.experimental.multigrid_elastostatics.multigrid_solver import MultigridSolver
+from xlb.experimental.multigrid_elastostatics.benchmark_data import BenchmarkData
+from xlb.experimental.multigrid_elastostatics.kernel_provider import KernelProvider
 import argparse
 import time
 

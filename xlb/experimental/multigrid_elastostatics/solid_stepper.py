@@ -9,13 +9,13 @@ from xlb.operator.stream import Stream
 from xlb.operator import Operator
 from xlb.compute_backend import ComputeBackend
 
-from xlb.experimental.thermo_mechanical.solid_collision import SolidsCollision
-from xlb.experimental.thermo_mechanical.solid_boundary import SolidsBoundary
-from xlb.experimental.thermo_mechanical.solid_macroscopic import SolidMacroscopics
-from xlb.experimental.thermo_mechanical.solid_bared_moments import SolidBaredMoments
-import xlb.experimental.thermo_mechanical.solid_utils as utils
-from xlb.experimental.thermo_mechanical.solid_simulation_params import SimulationParams
-from xlb.experimental.thermo_mechanical.kernel_provider import KernelProvider
+from xlb.experimental.multigrid_elastostatics.solid_collision import SolidsCollision
+from xlb.experimental.multigrid_elastostatics.solid_boundary import SolidsBoundary
+from xlb.experimental.multigrid_elastostatics.solid_macroscopic import SolidMacroscopics
+from xlb.experimental.multigrid_elastostatics.solid_bared_moments import SolidBaredMoments
+import xlb.experimental.multigrid_elastostatics.solid_utils as utils
+from xlb.experimental.multigrid_elastostatics.solid_simulation_params import SimulationParams
+from xlb.experimental.multigrid_elastostatics.kernel_provider import KernelProvider
 
 # Mapping:
 #    i  j   |   m_q

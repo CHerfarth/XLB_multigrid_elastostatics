@@ -8,9 +8,9 @@ from xlb.precision_policy import PrecisionPolicy
 from xlb.utils import save_image
 from xlb.compute_backend import ComputeBackend
 from xlb.operator.operator import Operator
-import xlb.experimental.thermo_mechanical.solid_utils as utils
-from xlb.experimental.thermo_mechanical.solid_simulation_params import SimulationParams
-from xlb.experimental.thermo_mechanical.kernel_provider import KernelProvider
+import xlb.experimental.multigrid_elastostatics.solid_utils as utils
+from xlb.experimental.multigrid_elastostatics.solid_simulation_params import SimulationParams
+from xlb.experimental.multigrid_elastostatics.kernel_provider import KernelProvider
 from xlb import DefaultConfig
 
 
