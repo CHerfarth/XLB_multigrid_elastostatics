@@ -51,6 +51,16 @@ class Restriction(Operator):
             fine_nodes_x: wp.int32,
             fine_nodes_y: wp.int32,
         ):
+            """
+            Kernel to restrict the grid from fine to coarse (with periodic BC)
+            fine: fine grid with residual at iteration i
+            coarse: coarse grid (double the grid spacing of fine), with arbitrary initial values
+            fine_nodes_x: number of nodes in x direction of fine grid
+            fine_nodes_y: number of nodes in y direction of fine grid
+
+            Exits with:
+                coarse grid with interpolated values from fine grid
+            """
             i, j, k = wp.tid()
 
             _center = read_local_population(fine, 2 * i, 2 * j)
@@ -108,8 +118,20 @@ class Restriction(Operator):
             fine_nodes_y: wp.int32,
             fine_boundary_array: wp.array4d(dtype=wp.int8),
         ):
+            """
+            Kernel to restrict the grid from fine to coarse (with Dirichlet/VN BC)
+            fine: fine grid with residual at iteration i
+            coarse: coarse grid (double the grid spacing of fine), with arbitrary initial values
+            fine_nodes_x: number of nodes in x direction of fine grid
+            fine_nodes_y: number of nodes in y direction of fine grid
+            fine_boundary_array: array marking boundary nodes in fine grid
+
+            Exits with:
+                coarse grid with interpolated values from fine grid
+            """
             i, j, k = wp.tid()
 
+            # Read populations of the 9-point stencil
             _center = read_local_population(fine, 2 * i, 2 * j)
             _up = read_local_population(fine, 2 * i, wp.mod(2 * j + 1 + fine_nodes_y, fine_nodes_y))
             _down = read_local_population(
@@ -143,6 +165,8 @@ class Restriction(Operator):
                 wp.mod(2 * j + 1 + fine_nodes_y, fine_nodes_y),
             )
 
+            # If one of the nodes is a ghost node, interpolate with zero population
+            # (Justification: solution at outside domain is zero, so residual must be zero as well)
             if fine_boundary_array[0, 2 * i, 2 * j, 0] == wp.int8(0):
                 _center = zero_vec()
             if fine_boundary_array[
@@ -190,6 +214,7 @@ class Restriction(Operator):
             ] == wp.int8(0):
                 _dia_4 = zero_vec()
 
+            # Interpolate
             _f_out = functional(
                 center=_center,
                 up=_up,
@@ -202,6 +227,7 @@ class Restriction(Operator):
                 dia_4=_dia_4,
             )
 
+            # Write to coarse grid
             write_population_to_global(coarse, _f_out, i, j)
 
         return functional, (kernel_no_bc, kernel_with_bc)

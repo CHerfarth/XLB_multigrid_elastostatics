@@ -384,6 +384,9 @@ class MultigridStepper(Stepper):
             (this is e.g. the case if f_1 is freshly prolongated from a coarser grid)
         gamma: relaxation parameter
         defect_factor: multiplicative factor for defect correction (set to 0.0 for no correction)
+
+        Exits with:
+            pre-collision populations at smoothing step i+1 written to f_1 
         """
         if gamma is None:
             gamma = self.gamma

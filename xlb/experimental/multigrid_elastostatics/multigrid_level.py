@@ -19,6 +19,12 @@ from xlb.experimental.multigrid_elastostatics.multigrid_restriction import Restr
 
 
 class Level(Operator):
+    """
+    Class representing one level in the multigrid hierarchy
+    Each level has its own grid, stepper, and fields for populations and defect correction
+    The level can perform one iteration of a multigrid cycle scheme when called,
+    and recursively calls the next coarser level if it exists.
+    """
     def __init__(
         self,
         nodes_x,
@@ -36,6 +42,20 @@ class Level(Operator):
         coarsest_level_iter=0,
         error_correction_iterations=1,  # by default do V-cycle
     ):
+        """
+        nodes_x, nodes_y: number of nodes in x and y direction
+        dx, dt: spatial and temporal resolution
+        force_load: function defining external forces, takes (x,y) coordinates as input
+        gamma: relaxation parameter
+        v1, v2: number of pre- and post-smoothing steps
+        level_num: level number in the multigrid hierarchy (0 is finest)
+        compute_backend: for initialiizing XLB funcs, (should be ComputeBackend.WARP)
+        velocity_set: velocity set to use (should be D2Q9)
+        precision_policy: 
+        coarsest_level_iter: number of iterations to perform on coarsest level for direct solving
+        error_correction_iterations: number of recursive calls to coarse level per MG iteration
+            1 = V-cycle, 2 = W-cycle, etc.
+        """
         super().__init__(
             velocity_set=velocity_set,
             precision_policy=precision_policy,
@@ -100,6 +120,10 @@ class Level(Operator):
         self.convert_moments_to_populations = kernel_provider.convert_moments_to_populations
         self.set_zero_outside_boundary = kernel_provider.set_zero_outside_boundary
 
+        """
+        The warp kernel and functional of Level are only used to calculate the residual
+        """
+
         @wp.func
         def functional(f_previous_pre_collision: vec, f_pre_collision: vec, defect_correction: vec):
             _f_out = defect_correction
@@ -111,11 +135,20 @@ class Level(Operator):
         @wp.kernel
         def kernel(
             f_1: wp.array4d(
-                dtype=self.store_dtype
-            ),  # previous pre-collision population & output array
-            f_2: wp.array4d(dtype=self.store_dtype),  # new pre-collision population
+                dtype=self.store_dtype),  
+            f_2: wp.array4d(dtype=self.store_dtype),  
             defect_correction: wp.array4d(dtype=self.store_dtype),
         ):
+            """
+            Kernel to compute the residual at iteration i
+
+            f_1: grid with pre-collision populations at iteration i 
+            f_2: grid with pre-collision populations at iteration i+1
+            defect_correction: grid with values for external forcing
+
+            Exits with:
+                residual at iteration i written to f_1
+            """ 
             i, j, k = wp.tid()
 
             _f_previous_pre_collision = read_local_population(f_1, i, j)
@@ -133,15 +166,32 @@ class Level(Operator):
         return functional, kernel
 
     def get_residual(self, f_1, f_2, f_3, defect_correction):
+        """
+        Computes the residual at iteration i
+
+        f_1: grid with pre-collision populations at iteration i
+        f_2: grid with arbitrary values
+        f_3: grid with arbitrary values
+        defect_correction: grid with values for external forcing
+
+        Exits with:
+            residual at iteration i written to f_3
+        """
         wp.launch(self.copy_populations, inputs=[f_1, f_3, 9], dim=f_1.shape[1:])
         self.stepper(f_1, f_2, self.f_4, defect_correction, gamma=1.0, defect_factor=0.0)
         wp.launch(self.warp_kernel, inputs=[f_3, f_1, defect_correction], dim=f_1.shape[1:])
 
     def set_params(self):
+        """
+        Sets the simulation parameters based on the level's dx and dt
+        """
         simulation_params = SimulationParams()
         simulation_params.set_dx_dt(self.dx, self.dt)
 
     def add_boundary_conditions(self, boundary_conditions, boundary_values):
+        """
+        Manually add boundary conditions to the level's stepper
+        """
         self.boundary_conditions = boundary_conditions
         self.stepper.add_boundary_conditions(boundary_conditions, boundary_values)
 
@@ -160,7 +210,7 @@ class Level(Operator):
         self.defect_correction: grid with values for external forcing
 
         exits with:
-            one iteration of gamma-cycle scheme performed
+            one iteration of mu-cycle scheme performed
             self.f_1 contains updated pre-collision populations
             return current norm of residual if return_residual is set to True
         """

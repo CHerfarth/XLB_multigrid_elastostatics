@@ -156,6 +156,14 @@ class MultigridSolver:
             del level
 
     def get_macroscopics(self, output_array):
+        """
+        Get macroscopic quantities from the finest level and store them in the output array.
+
+        output_array: grid to store output
+
+        Exits with:
+            macroscopics stored in output_array
+        """
         finest_level = self.get_finest_level()
         finest_level.stepper.get_macroscopics(f=finest_level.f_1, output_array=output_array)
 

@@ -24,8 +24,14 @@ def write_results(norms_over_time, name):
         writer.writerow(["Timestep", "L2", "Linf"])
         writer.writerows(norms_over_time)
 
+"""
+This is a simple example of using the LB solver for elastostatics.
+"""
+
 
 if __name__ == "__main__":
+    
+    #----------- initialize xlb -----------
     wp.config.mode = "debug"
     compute_backend = ComputeBackend.WARP
     precision_policy = PrecisionPolicy.FP32FP32
@@ -39,12 +45,12 @@ if __name__ == "__main__":
         default_precision_policy=precision_policy,
     )
 
-    # initialize grid
+    #----------- create grid -----------
     nodes_x = 16
     nodes_y = nodes_x
     grid = grid_factory((nodes_x, nodes_y), compute_backend=compute_backend)
 
-    # get discretization
+    #----------- set spatial and temporal resolution, as well as material params ----------- 
     length_x = 1
     length_y = 1
     dx = length_x / float(nodes_x)
@@ -52,20 +58,16 @@ if __name__ == "__main__":
     assert math.isclose(dx, dy)
     timesteps = 1000
     dt = 0.001
-
-    # params
     E = 0.085 * 2.5
     nu = 0.8
-
     solid_simulation = SimulationParams()
     solid_simulation.set_all_parameters(
         E=E, nu=nu, dx=dx, dt=dt, L=dx, T=dt, kappa=1, theta=1.0 / 3.0
     )
-    print("E: {}, nu: {}".format(solid_simulation.lamb, solid_simulation.mu))
-    # get force load
+
+    #----------- set manufactured solution and get force load from it----------- 
+    # (if you just want to run the solver, leave out the manufactured solution and set the force load by hand)
     x, y = sympy.symbols("x y")
-    # manufactured_u = sympy.cos(2 * sympy.pi * x)  # + 3
-    # manufactured_v = sympy.cos(2 * sympy.pi * y)  # + 3
     manufactured_u = 3 * sympy.sin(2 * sympy.pi * x) * sympy.sin(2 * sympy.pi * y)
     manufactured_v = 3 * sympy.sin(2 * sympy.pi * y) * sympy.sin(2 * sympy.pi * x)
     expected_displacement = np.array([
@@ -82,7 +84,7 @@ if __name__ == "__main__":
         utils.get_function_on_grid(s_xy, x, y, dx, grid),
     ])
 
-    # set boundary potential
+    #------------ set boundary conditions on a circular domain matching manufactured solution-----------
     potential_sympy = (0.5 - x) ** 2 + (0.5 - y) ** 2 - 0.25 * 100
     potential = sympy.lambdify([x, y], potential_sympy)
     indicator = lambda x, y: -1
@@ -91,16 +93,16 @@ if __name__ == "__main__":
     )
     potential, boundary_array, boundary_values = None, None, None
 
-    # adjust expected solution
+    #---------------- adjust expected solution by newly defined boundary conditions-----------
     expected_macroscopics = np.concatenate((expected_displacement, expected_stress), axis=0)
     expected_macroscopics = utils.restrict_solution_to_domain(expected_macroscopics, potential, dx)
 
-    # initialize stepper
+    # ---------- create stepper -----------
     stepper = SolidsStepper(
         grid, force_load, boundary_conditions=boundary_array, boundary_values=boundary_values
     )
 
-    # startup grids
+    # ---------- create fields and arrays to track error -----------
     f_1 = grid.create_field(cardinality=velocity_set.q, dtype=precision_policy.store_precision)
     f_2 = grid.create_field(cardinality=velocity_set.q, dtype=precision_policy.store_precision)
     f_3 = grid.create_field(cardinality=velocity_set.q, dtype=precision_policy.store_precision)
@@ -112,17 +114,18 @@ if __name__ == "__main__":
     tolerance = 1e-6
     l2, linf = 0, 0
     for i in range(timesteps):
+        # run simulation
         stepper(f_1, f_2, f_3)
         f_1, f_2 = f_2, f_1
+
+        # output error norms and images
         stepper.get_macroscopics(f=f_1, output_array=macroscopics)
         l2_disp, linf_disp, l2_stress, linf_stress = utils.process_error(
             macroscopics.numpy(), expected_macroscopics, i, dx, norms_over_time
         )
         utils.output_image(macroscopics.numpy(), i, "figure")
-        # print(l2_disp, linf_disp, l2_stress, linf_stress)
 
     # write out error norms
-    # print("Final error: {}".format(norms_over_time[len(norms_over_time) - 1]))
     stepper.get_macroscopics(f_1, macroscopics)
     utils.process_error(macroscopics.numpy(), expected_macroscopics, i, dx, norms_over_time)
     # write out error norms
@@ -132,4 +135,3 @@ if __name__ == "__main__":
     print("Final error L2_stress: {}".format(last_norms[3]))
     print("Final error Linf_stress: {}".format(last_norms[4]))
     print("in {} timesteps".format(last_norms[0]))
-    # write_results(norms_over_time, "results.csv")
