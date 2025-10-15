@@ -15,7 +15,7 @@ Quick run
 2. From this folder run:
    bash start_convergence_study.sh
 3. Outputs:
-   - Convergence plots (PDF/PNG) and CSV files with errors are written to the working directory (same folder where the script is run).
+   - Convergence plots (PDF) and CSV files with errors are written to the working directory (same folder where the script is run).
 
 Adjusting the study
 - Simulation parameters / material properties / geometry: edit convergence_study.py 
