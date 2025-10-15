@@ -9,16 +9,16 @@ Additionally, it implements a **multigrid Lattice Boltzmann (LB) scheme** for li
 
 All newly implemented code is located in:
 
-xlb/experimental/multigrid_elastostatics
+`xlb/experimental/multigrid_elastostatics`
 
 
 - Files related to the **original LB scheme** use the prefix:  
 
-solid_*
+`solid_*`
 
 - Files related to the **multigrid LB scheme** use the prefix:  
 
-multigrid_*
+`multigrid_*`
 
 
 > 📚 A full documentation is not yet available.  

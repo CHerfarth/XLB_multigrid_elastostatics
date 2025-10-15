@@ -83,7 +83,6 @@ def get_error_norms(current_macroscopics, expected_macroscopics, dx, timestep=0)
     return l2_disp, linf_disp, l2_stress, linf_stress
 
 
-
 def get_expected_stress(manufactured_displacement, x, y):
     """
     Calculates expected stress from manufactured displacement

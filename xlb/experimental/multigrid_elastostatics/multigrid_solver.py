@@ -60,7 +60,7 @@ class MultigridSolver:
             (if using Dirichlet or VN BC)
         boundary_values: array of boundary values on finest grid
         potential: sympy expression for boundary potential (if using Dirichlet or VN BC)
-        error_correction_iterations: number of recursive calls to 
+        error_correction_iterations: number of recursive calls to
             multigrid stepper on coarser levels (1 -> V-cycle, 2 -> W-cycle, etc.)
         """
         precision_policy = DefaultConfig.default_precision_policy
@@ -167,7 +167,7 @@ class MultigridSolver:
         finest_level = self.get_finest_level()
         finest_level.stepper.get_macroscopics(f=finest_level.f_1, output_array=output_array)
 
-    #This function is deprecated and should no longer be used
+    # This function is deprecated and should no longer be used
     def start_v_cycle(self, return_residual=False, timestep=0):
         finest_level = self.get_finest_level()
         return finest_level(self, return_residual, timestep)

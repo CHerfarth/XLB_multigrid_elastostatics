@@ -36,15 +36,16 @@ class MultigridStepper(Stepper):
     Performs smoothing steps needed by multigrid elastostatics scheme
 
     """
+
     def __init__(self, grid, force_load, gamma, boundary_conditions=None, boundary_values=None):
         """
         Initializer
 
         grid: xlb grid object, define domain size and resolution
         force_load: expected as callable function (e.g. lambda function)
-        boundary_condition: when simulating with Dirichlet or VN; 4d warp array specifiying 
+        boundary_condition: when simulating with Dirichlet or VN; 4d warp array specifiying
             boundary nodes, type of boundary conditions and missing populations (see solid_boundary.py)
-        boundary_values: when simulating with Dirichlet or VN; 4d warp array with floating point 
+        boundary_values: when simulating with Dirichlet or VN; 4d warp array with floating point
             values needed for reconstruction of missing populations on boundary (see solid_boundary.py)
         """
 
@@ -386,7 +387,7 @@ class MultigridStepper(Stepper):
         defect_factor: multiplicative factor for defect correction (set to 0.0 for no correction)
 
         Exits with:
-            pre-collision populations at smoothing step i+1 written to f_1 
+            pre-collision populations at smoothing step i+1 written to f_1
         """
         if gamma is None:
             gamma = self.gamma

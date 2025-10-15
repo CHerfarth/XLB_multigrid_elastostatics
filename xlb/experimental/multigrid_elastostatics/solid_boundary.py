@@ -69,7 +69,7 @@ class SolidsBoundary(Operator):
             old_direction: direction index from node to ghost node
             f_current_vec: vector of populations after streaming step at time t
                  with missing incoming population not applied yet
-            f_previous_post_collision_vec: vector of populations 
+            f_previous_post_collision_vec: vector of populations
                 after collision step at time t - Delta t
             bared_m_vec: vector of bared moments
             u_x, u_y: boundary conditions
@@ -139,7 +139,7 @@ class SolidsBoundary(Operator):
             Note: currently only zeroth order correction is implemented
 
             old_direction: direction from node to ghost node
-            f_post_stream_vec: vector of populations after streaming step at time t 
+            f_post_stream_vec: vector of populations after streaming step at time t
                 with missing incoming population not applied yet
             f_post_collision_vec: vector of populations after collision step at time t
             bared_m_vec: vector of bared moments
@@ -362,18 +362,17 @@ class SolidsBoundary(Operator):
                         )
             return f_out_vec
 
-        # Kernel is not implemented. Boundary conditions are to be applied from 
+        # Kernel is not implemented. Boundary conditions are to be applied from
         # inside a seperate kernel by calling the functional above
         # (see solid_stepper.py or multigrid_stepper.py)
         return functional, None
 
     @Operator.register_backend(ComputeBackend.WARP)
-    def warp_implementation(
-        self
-    ):
+    def warp_implementation(self):
         raise NotImplementedError(
             "Boundary conditions are to be applied by calling the functional, not through a kernel"
         )
+
 
 # --------------utils used to construct bc arrays----------------
 def init_bc_from_lambda(

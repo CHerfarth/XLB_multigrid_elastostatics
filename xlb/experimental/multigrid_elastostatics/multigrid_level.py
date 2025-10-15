@@ -25,6 +25,7 @@ class Level(Operator):
     The level can perform one iteration of a multigrid cycle scheme when called,
     and recursively calls the next coarser level if it exists.
     """
+
     def __init__(
         self,
         nodes_x,
@@ -51,7 +52,7 @@ class Level(Operator):
         level_num: level number in the multigrid hierarchy (0 is finest)
         compute_backend: for initialiizing XLB funcs, (should be ComputeBackend.WARP)
         velocity_set: velocity set to use (should be D2Q9)
-        precision_policy: 
+        precision_policy:
         coarsest_level_iter: number of iterations to perform on coarsest level for direct solving
         error_correction_iterations: number of recursive calls to coarse level per MG iteration
             1 = V-cycle, 2 = W-cycle, etc.
@@ -134,21 +135,20 @@ class Level(Operator):
 
         @wp.kernel
         def kernel(
-            f_1: wp.array4d(
-                dtype=self.store_dtype),  
-            f_2: wp.array4d(dtype=self.store_dtype),  
+            f_1: wp.array4d(dtype=self.store_dtype),
+            f_2: wp.array4d(dtype=self.store_dtype),
             defect_correction: wp.array4d(dtype=self.store_dtype),
         ):
             """
             Kernel to compute the residual at iteration i
 
-            f_1: grid with pre-collision populations at iteration i 
+            f_1: grid with pre-collision populations at iteration i
             f_2: grid with pre-collision populations at iteration i+1
             defect_correction: grid with values for external forcing
 
             Exits with:
                 residual at iteration i written to f_1
-            """ 
+            """
             i, j, k = wp.tid()
 
             _f_previous_pre_collision = read_local_population(f_1, i, j)
