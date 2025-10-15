@@ -4,7 +4,7 @@ nodes_x=32
 nodes_y=32
 timesteps=500
 coarsest_level_iter=100
-vals_nu=1
+vals_nu=6
 vals_E=10
 
 vals_v=7
@@ -16,7 +16,7 @@ results_file="results_"$current_date_time".csv"
 echo "nodes_x,nodes_y,timesteps,coarsest_level_iter,nu,E,v1,v2,converged,rate,WU_per_iteration" > $results_file
 for ((i=0; i<vals_nu; i++))
 do
-    nu=$(echo "0.8 + 0.1*$i"|bc -l)
+    nu=$(echo "0.3 + 0.1*$i"|bc -l)
 
     for ((j=0; j<vals_E; j++))
     do

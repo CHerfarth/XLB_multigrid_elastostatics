@@ -149,24 +149,8 @@ ax.plot(
 ax.grid(True)
 plt.yscale("log")
 ax.set_title(title)
-# plot expected speed of convergence
-slope = 0.714**4
-multigrid_data["slope_power"] = slope ** multigrid_data["iteration"]
-ax.plot(
-    multigrid_data["iteration"],
-    multigrid_data["slope_power"],
-    "--",
-    color="black",
-    label="Expected Speed of convergence = 0.714**4",
-)
-slope = 0.93
-multigrid_data["slope_power"] = slope ** multigrid_data["iteration"]
-# ax.plot(multigrid_data['iteration'], multigrid_data['slope_power'], '--', color='green', label="Speed of convergence = {}".format(slope))
-print(slope)
 ax.set_xlim((0, 300))
 ax.set_ylim((1e-6, 1))
-# calculate actual speed of convergence
-end_residual = multigrid_data["residual_norm"].min()
 plt.xlabel(x_label, labelpad=20, fontsize=12)
 plt.ylabel(y_label, labelpad=20, fontsize=12)
 plt.legend(loc="upper right")

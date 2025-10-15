@@ -44,7 +44,7 @@ Each experiment resides in its respective subfolder.
 
 To run the original or multigrid LB schemes, check out the usage examples in:
 
-examples/multigrid_elastostatics
+`examples/multigrid_elastostatics`
 
 
 These scripts demonstrate typical simulation setups and parameter configurations.
