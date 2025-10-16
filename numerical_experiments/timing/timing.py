@@ -124,7 +124,7 @@ if __name__ == "__main__":
             v2=3,
             max_levels=None,
         )
-        residual_norm = multigrid_solver.start_v_cycle(return_residual=True)
+        residual_norm = multigrid_solver.start_cycle(return_residual=True)
 
         multigrid_solver.free()
         del multigrid_solver
@@ -152,7 +152,7 @@ if __name__ == "__main__":
             error_correction_iterations=1,
         )
         for i in range(timesteps):
-            residual_norm = multigrid_solver.start_v_cycle(return_residual=True)
+            residual_norm = multigrid_solver.start_cycle(return_residual=True)
             print(residual_norm)
             if residual_norm / dt < tol:
                 converged = 1
@@ -191,7 +191,7 @@ if __name__ == "__main__":
         )
         start = time.time()
         for i in range(timesteps):
-            residual_norm = multigrid_solver.start_v_cycle(return_residual=True)
+            residual_norm = multigrid_solver.start_cycle(return_residual=True)
             print(residual_norm)
             if residual_norm / dt < tol:
                 converged = 1
@@ -229,7 +229,7 @@ if __name__ == "__main__":
             error_correction_iterations=2,
         )
         for i in range(timesteps):
-            residual_norm = multigrid_solver.start_v_cycle(return_residual=True)
+            residual_norm = multigrid_solver.start_cycle(return_residual=True)
             print(residual_norm)
             if residual_norm / dt < tol:
                 converged = 1
@@ -268,7 +268,7 @@ if __name__ == "__main__":
         )
         start = time.time()
         for i in range(timesteps):
-            residual_norm = multigrid_solver.start_v_cycle(return_residual=True)
+            residual_norm = multigrid_solver.start_cycle(return_residual=True)
             print(residual_norm)
             if residual_norm / dt < tol:
                 converged = 1

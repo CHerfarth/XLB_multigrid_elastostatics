@@ -15,7 +15,7 @@ import csv
 import math
 import xlb.experimental.multigrid_elastostatics.solid_utils as utils
 import argparse
-import xlb.experimental.multigrid_elastostatics.solid_bounceback as bc
+import xlb.experimental.multigrid_elastostatics.solid_boundary as bc
 from xlb.experimental.multigrid_elastostatics.solid_simulation_params import SimulationParams
 
 

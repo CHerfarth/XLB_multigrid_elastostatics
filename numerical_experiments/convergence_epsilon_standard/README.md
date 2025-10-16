@@ -17,3 +17,6 @@ Outputs
 Adjust
 - convergence_study.py — material parameters and geometry.
 - convergence_study.sh — base grid size, time steps, and number of refinement iterations.
+
+Warning
+- VN boundary conditions are currently not working and will cause an error

@@ -134,7 +134,7 @@ if __name__ == "__main__":
     # get exact solution
     wp.synchronize()
     for i in range(timesteps_mg):
-        residual_norm = multigrid_solver.start_v_cycle(return_residual=True)
+        residual_norm = multigrid_solver.start_cycle(return_residual=True)
         if residual_norm < 1e-11:
             break
 
@@ -167,7 +167,7 @@ if __name__ == "__main__":
     # get exact solution
     wp.synchronize()
     for i in range(timesteps_mg):
-        residual_norm = multigrid_solver.start_v_cycle(return_residual=True)
+        residual_norm = multigrid_solver.start_cycle(return_residual=True)
         f_current = multigrid_solver.get_finest_level().f_1.numpy()
         error_norm = np.sqrt(np.nansum(np.linalg.norm(f_current - f_exact, axis=0) ** 2)) * dx
         if np.isclose(error_norm, 0):

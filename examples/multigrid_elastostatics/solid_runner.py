@@ -125,8 +125,6 @@ if __name__ == "__main__":
         utils.output_image(macroscopics.numpy(), i, "figure")
 
     # ---------- write results and final error norms -----------
-    stepper.get_macroscopics(f=f_3, output_array=macroscopics, f_is_post_collision=False)
-    utils.process_error(macroscopics.numpy(), expected_macroscopics, i, dx, norms_over_time)
     last_norms = norms_over_time[len(norms_over_time) - 1]
     print("Final error L2_disp: {}".format(last_norms[1]))
     print("Final error Linf_disp: {}".format(last_norms[2]))

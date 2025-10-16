@@ -167,7 +167,9 @@ class MultigridSolver:
         finest_level = self.get_finest_level()
         finest_level.stepper.get_macroscopics(f=finest_level.f_1, output_array=output_array)
 
-    # This function is deprecated and should no longer be used
-    def start_v_cycle(self, return_residual=False, timestep=0):
+    def start_cycle(self, return_residual=False, timestep=0):
+        """
+        Start a multigrid cycle from the finest level.
+        """
         finest_level = self.get_finest_level()
         return finest_level(self, return_residual, timestep)

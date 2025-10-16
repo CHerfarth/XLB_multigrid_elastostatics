@@ -1,26 +1,22 @@
 # Convergence tester — multigrid elastostatic LB
 
-Purpose
-- Run automated convergence studies for the standard elastostatic lattice-Boltzmann solver.
+Run automated convergence studies for the standard elastostatic LB solver.
 
-Prerequisites
-- Python with required packages (see project environment or pip install requirements).
-- Bash to run the provided shell scripts.
+Subfolders
+- convergence_epsilon_no_boundaries — periodic BC.
+- convergence_epsilon_with_dirichlet — Dirichlet BC.
+- convergence_epsilon_with_vn — Von Neumann BC.
 
-Quick run
-1. Choose boundary-condition subfolder:
-   - periodic BC: convergence_epsilon_no_boundaries
-   - Dirichlet BC: convergence_epsilon_with_dirichlet
-   - Von Neumann BC: convergence_epsilon_with_vn
-2. From this folder run:
-   bash start_convergence_study.sh
-3. Outputs:
-   - Convergence plots (PDF) and CSV files with errors are written to the working directory (same folder where the script is run).
+Run
+- cd into the desired subfolder, then:
+  bash start_convergence_study.sh
 
-Adjusting the study
-- Simulation parameters / material properties / geometry: edit convergence_study.py 
-- Grid sizes / refinement / iterations: edit convergence_study.sh 
+Outputs
+- Convergence plots and CSVs with errors are written to the working directory.
 
-Notes
-- Run scripts assume default environment; activate your Python environment if needed.
-- For reproducibility, record the parameters printed at the start of each run.
+Adjust
+- convergence_study.py — material parameters and geometry.
+- convergence_study.sh — base grid size, time steps, and number of refinement iterations.
+
+Warning
+- VN boundary conditions are currently not working and will cause an error

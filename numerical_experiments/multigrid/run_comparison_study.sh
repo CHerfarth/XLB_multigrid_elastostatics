@@ -13,7 +13,7 @@ do
     rm tmp.txt
     python3 plotter.py >> tmp.txt
     rm tmp.txt
-    dir_name=plots_nodes_"$nodes_x"_dt_"$dt"
+    dir_name=plots_nodes_"$nodes_x"
     mkdir $dir_name
     mv *png $dir_name
 

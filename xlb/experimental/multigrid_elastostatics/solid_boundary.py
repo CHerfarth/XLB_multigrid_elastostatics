@@ -386,13 +386,34 @@ def init_bc_from_lambda(
     y,
     precision_policy=None,
 ):
-    # Mapping:
+    """
+    Initialize boundary conditions from a level set function given as a sympy expression
+
+    potential_sympy: sympy expression defining the level set function
+    grid: grid object
+    dx: lattice spacing
+    velocity_set: velocity set object
+    manufactured_displacement: tuple of sympy expressions defining the manufactured displacement
+    indicator: function taking x and y coordinates and returning <0 for Dirichlet BC and >0 for VN BC
+    x, y: sympy symbols
+    precision_policy: precision policy object (if None, default precision policy is used)
+
+    returns:
+        boundary_info: warp array encoding the type of node (interior, boundary, ghost), as well as missing neighbors
+        boundary_values: warp array storing values needed for reconstructing missing populations at boundary
+            (e.g. boundary displacement, distance to boundary, normal vector, traction, etc.)
+    """
+    # Mapping for boundary_info[0]:
     # 0: ghost node
     # 1: interior node
     # 2: boundary node with dirichlet bc
     # 3: boundary node with VN bc
 
-    # Mapping for boundary values, dirichlet:
+    # Mapping for boundary_info[1...q]:
+    # 0: no missing neighbor in this direction
+    # 1: missing neighbor in this direction (i.e. connected to ghost node)
+
+    # Mapping for boundary values, Dirichlet:
     # 0: u_x
     # 1: u_y
     # 2:
@@ -410,7 +431,7 @@ def init_bc_from_lambda(
     # 5:
     # 6: q_ij
 
-    if precision_policy == None:
+    if precision_policy is None:
         precision_policy = DefaultConfig.default_precision_policy
 
     potential = sympy.lambdify([x, y], potential_sympy)

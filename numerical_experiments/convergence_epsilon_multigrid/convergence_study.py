@@ -143,7 +143,7 @@ if __name__ == "__main__":
     )
 
     for i in range(timesteps):
-        residual_norm = multigrid_solver.start_v_cycle(return_residual=True)
+        residual_norm = multigrid_solver.start_cycle(return_residual=True)
         residuals.append(residual_norm)
         multigrid_solver.get_macroscopics(output_array=macroscopics)
         l2_disp, linf_disp, l2_stress, linf_stress = utils.process_error(

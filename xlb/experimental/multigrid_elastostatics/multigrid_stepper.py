@@ -49,7 +49,7 @@ class MultigridStepper(Stepper):
             values needed for reconstruction of missing populations on boundary (see solid_boundary.py)
         """
 
-        super().__init__(grid, boundary_conditions, compute_backend=ComputeBackend.WARP)
+        super().__init__(grid, boundary_conditions)
         self.grid = grid
         self.boundary_conditions = boundary_conditions
         self.boundary_values = boundary_values

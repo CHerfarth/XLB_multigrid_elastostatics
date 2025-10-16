@@ -1,3 +1,7 @@
+#!/bin/bash
+
+# This script just generates the contour plots I used in my bachelor thesis.
+# Its kept here for completeness
 E_list=(0.2 0.5 0.8)
 nu_list=(0.3 0.5 0.7)
 
